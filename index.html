@@ -7,7 +7,7 @@
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- SDK de Supabase para guardar los registros de los compradores -->
+  <!-- SDK de Supabase para sincronización en la nube entre dispositivos -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script type="text/javascript">
@@ -100,10 +100,11 @@
     .logo-circle {
       width: 90px; height: 90px; margin: 0 auto; border-radius: 50%; 
       background: linear-gradient(135deg, #FFD700, #FF8C00); 
-      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      display: flex; align-items: center; justify-content: center; 
       box-shadow: 0 0 25px rgba(255,215,0,0.5); overflow: hidden;
-      color: #000; font-weight: 900; font-size: 12px; text-align: center;
+      border: 2px solid #FFD700; cursor: pointer;
     }
+    .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
 
     .bar { background: #1a1a1a; height: 26px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid #333; }
     .fill { height: 100%; background: linear-gradient(90deg, #FFD700, #FF5722, #E91E63); width: 0%; transition: width 0.8s ease; box-shadow: 0 0 15px #FFD700; }
@@ -191,33 +192,34 @@
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <div class="logo-circle" onclick="abrirAdminLogin()" style="cursor: pointer;" title="Panel Admin">
-          <span>THE WIN</span>
+        <div class="logo-circle" onclick="abrirAdminLogin()" title="Panel Admin">
+          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
         </div>
+
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
         <h3 style="margin: 0; color: #bbb; font-weight: 600;">KEEWAY MINNIX 150 🛵</h3>
         
         <div class="prize-img-container">
-          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48.jpeg" alt="Moto en la Calle">
+          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Moto en la Calle">
         </div>
 
         <div class="card glow-gold" style="text-align: left; padding: 15px; margin-top: 15px;">
           <h4 style="color: #FFD700; margin: 0 0 10px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
           <div class="prizes-grid">
             <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Teléfonos"></div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos"></div>
               <div class="mini-prize-title">Teléfonos y Accesorios</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Exhibición"></div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Exhibición"></div>
               <div class="mini-prize-title">Moto en Exhibición</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Ángulo Moto"></div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Ángulo Moto"></div>
               <div class="mini-prize-title">Segundo Ángulo Moto</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Kit Sorpresa"></div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Kit Sorpresa"></div>
               <div class="mini-prize-title">Kit Sorpresa</div>
             </div>
           </div>
@@ -314,7 +316,7 @@
       </div>
     </div>
 
-    <!-- PANTALLA 4: PAGO CON PAYPAL Y BANCOS -->
+    <!-- PANTALLA 4: PAGO CON WHATSAPP OBLIGATORIO -->
     <div id="screen4" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">MÉTODOS DE PAGO</h2>
       <div class="card glow-gold">
@@ -347,23 +349,42 @@
           <div class="pago-details"><b>Titular:</b> Sergio Guizado García</div>
         </div>
 
-        <!-- PayPal Automatizado -->
+        <!-- PayPal -->
         <div class="pago-card highlight" style="text-align: center;">
           <h4 style="margin: 0 0 5px; color: #FFD700;">PayPal Seguro</h4>
-          <p style="font-size: 11px; color: #aaa; margin: 0 0 10px;">Paga de forma instantánea con tarjeta o saldo PayPal.</p>
-          <a id="paypalBtn" href="#" target="_blank" style="background: #0070BA; color: #fff; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block;">Pagar con PayPal ➔</a>
+          <a id="paypalBtn" href="#" target="_blank" style="background: #0070BA; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 13px;">Pagar con PayPal ➔</a>
         </div>
 
-        <button class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; margin-top: 10px;" onclick="finalizarCompra()">✅ YA REALICÉ EL PAGO</button>
+        <!-- PASO OBLIGATORIO: WHATSAPP -->
+        <div style="background: rgba(0, 230, 118, 0.1); border: 2px dashed #00E676; padding: 15px; border-radius: 14px; text-align: center; margin: 15px 0;">
+          <p style="font-size: 13px; color: #00E676; font-weight: 700; margin: 0 0 10px;">⚠️ PASO OBLIGATORIO</p>
+          <p style="font-size: 12px; color: #ddd; margin: 0 0 12px;">Haz clic aquí para enviar tu comprobante por WhatsApp y habilitar tu registro.</p>
+          <a id="whatsappBtn" href="#" target="_blank" onclick="habilitarFinalizacion()" style="background: #25D366; color: #000; padding: 12px 18px; border-radius: 12px; text-decoration: none; font-weight: 900; display: inline-block; font-size: 14px;">💬 ENVIAR COMPROBANTE POR WHATSAPP</a>
+        </div>
+
+        <button id="btnFinalizar" class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; margin-top: 10px;" disabled onclick="finalizarCompra()">✅ FINALIZAR Y REGISTRAR COMPRA</button>
         <button class="btn btn-sec" onclick="irAFormulario()" style="margin-top: 10px;">◄ VOLVER A MIS DATOS</button>
       </div>
     </div>
 
-    <!-- PANTALLA 5: PANEL DE ADMINISTRADOR SECRETO -->
+    <!-- PANTALLA 5: AGRADECIMIENTO Y SUERTE -->
+    <div id="screenGracias" class="hidden" style="text-align: center; padding: 30px 10px;">
+      <div class="card glow-gold" style="padding: 30px;">
+        <h2 style="color: #00E676; font-size: 28px; font-weight: 900; margin-bottom: 10px;">¡COMPRA REGISTRADA!</h2>
+        <p style="color: #fff; font-size: 15px; line-height: 1.6;">Tus números ya han sido apartados con éxito en el sistema.</p>
+        <div style="background: #151515; padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #333;">
+          <span style="color: #aaa; font-size: 13px;">Tus boletos asignados:</span><br>
+          <b id="txtBoletosFinales" style="color: #FFD700; font-size: 18px;">#0000</b>
+        </div>
+        <h3 style="color: #FFD700; font-size: 22px; margin: 15px 0;">¡Mucha suerte en el sorteo! 🍀</h3>
+        <p style="font-size: 12px; color: #888; margin-bottom: 25px;">Pronto nos pondremos en contacto contigo a través de tus datos de registro.</p>
+        <button class="btn" onclick="irAPrincipal()">VOLVER AL INICIO</button>
+      </div>
+    </div>
+
+    <!-- PANTALLA 6: PANEL DE ADMINISTRADOR SECRETO -->
     <div id="screenAdmin" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">PANEL DE ADMINISTRADOR</h2>
-      
-      <!-- Login Admin -->
       <div id="adminLoginBox" class="card glow-gold">
         <div class="form-group"><label>Usuario Admin</label><input type="text" id="adminUser" placeholder="Usuario"></div>
         <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="Contraseña"></div>
@@ -371,7 +392,6 @@
         <button class="btn btn-sec" onclick="irAPrincipal()" style="margin-top:10px;">◄ VOLVER A LA WEB</button>
       </div>
 
-      <!-- Contenido Admin -->
       <div id="adminDashboard" class="card glow-gold hidden">
         <div style="background: #181818; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
           <span style="color:#aaa; font-size:13px;">Total Números Vendidos:</span><br>
@@ -389,9 +409,7 @@
                 <th>Boletos</th>
               </tr>
             </thead>
-            <tbody id="adminTablaCompradores">
-              <!-- Se llena dinámicamente -->
-            </tbody>
+            <tbody id="adminTablaCompradores"></tbody>
           </table>
         </div>
         <button class="btn btn-sec" onclick="irAPrincipal()" style="margin-top: 15px;">CERRAR SESIÓN</button>
@@ -401,7 +419,7 @@
   </div>
 
   <script>
-    // Configuración de Supabase (puedes crear tu cuenta gratuita en supabase.com y poner tus credenciales aquí)
+    // CONFIGURA AQUÍ TUS CREDENCIALES DE SUPABASE (GRATIS EN LA NUBE)
     const SUPABASE_URL = 'TU_SUPABASE_URL';
     const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
     const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -410,21 +428,64 @@
     let seleccionados = [];
     let precioPorTicket = 1;
     let anguloActual = 0;
-    let vendidosGlobales = []; // Lista simulada o cargada de la nube
+    let vendidosGlobales = [];
+    let compradoresGlobales = [];
+    let comprobanteEnviado = false;
+
+    async function cargarDatosNube() {
+      if (!supabaseClient) {
+        // Fallback local si no se configuran credenciales todavía
+        vendidosGlobales = JSON.parse(localStorage.getItem('vendidos_rifa') || '[]');
+        compradoresGlobales = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
+        renderizarTabla7000();
+        return;
+      }
+      try {
+        const { data, error } = await supabaseClient.from('rifa_datos').select('*').eq('id', 1).single();
+        if (data) {
+          vendidosGlobales = data.vendidos || [];
+          compradoresGlobales = data.compradores || [];
+          renderizarTabla7000();
+        }
+      } catch (e) {
+        console.error("Error al conectar con la nube:", e);
+      }
+    }
+
+    async function guardarDatosNube(nuevosVendidos, nuevosCompradores) {
+      vendidosGlobales = nuevosVendidos;
+      compradoresGlobales = nuevosCompradores;
+      
+      // Guardar también localmente para respaldo inmediato
+      localStorage.setItem('vendidos_rifa', JSON.stringify(vendidosGlobales));
+      localStorage.setItem('compradores_rifa', JSON.stringify(compradoresGlobales));
+
+      if (supabaseClient) {
+        await supabaseClient.from('rifa_datos').update({
+          vendidos: vendidosGlobales,
+          compradores: compradoresGlobales
+        }).eq('id', 1);
+      }
+      renderizarTabla7000();
+    }
 
     function renderizarTabla7000() {
       const grid = document.getElementById('gridNumeros');
-      grid.innerHTML = '';
-      let html = '';
-      for (let i = 1; i <= 7000; i++) {
-        let clase = vendidosGlobales.includes(i) ? 'num sel' : 'num';
-        html += `<div class="${clase}" id="num-${i}">${i}</div>`;
+      if (grid) {
+        let html = '';
+        for (let i = 1; i <= 7000; i++) {
+          let clase = vendidosGlobales.includes(i) ? 'num sel' : 'num';
+          html += `<div class="${clase}" id="num-${i}">${i}</div>`;
+        }
+        grid.innerHTML = html;
       }
-      grid.innerHTML = html;
-      document.getElementById('vendidosGlobal').innerText = vendidosGlobales.length;
+      const elemVendidos = document.getElementById('vendidosGlobal');
+      if (elemVendidos) elemVendidos.innerText = vendidosGlobales.length;
       let porc = ((vendidosGlobales.length / 7000) * 100).toFixed(1);
-      document.getElementById('fillGlobal').style.width = porc + '%';
-      document.getElementById('porcGlobalTxt').innerText = porc + '% VENDIDO';
+      const elemFill = document.getElementById('fillGlobal');
+      if (elemFill) elemFill.style.width = porc + '%';
+      const elemPorcTxt = document.getElementById('porcGlobalTxt');
+      if (elemPorcTxt) elemPorcTxt.innerText = porc + '% VENDIDO';
     }
 
     function seleccionarPaquete(cantidad) {
@@ -436,19 +497,21 @@
       document.getElementById('btnGirar').disabled = false;
       document.getElementById('boomBox').classList.remove('show');
       
-      renderizarTabla7000();
-
-      document.getElementById('screen1').classList.add('hidden');
-      document.getElementById('screen2').classList.remove('hidden');
-      dibujarRuletaEstetica();
+      cargarDatosNube().then(() => {
+        document.getElementById('screen1').classList.add('hidden');
+        document.getElementById('screen2').classList.remove('hidden');
+        dibujarRuletaEstetica();
+      });
     }
 
     function irAPrincipal() {
       document.getElementById('screen2').classList.add('hidden');
       document.getElementById('screen3').classList.add('hidden');
       document.getElementById('screen4').classList.add('hidden');
+      document.getElementById('screenGracias').classList.add('hidden');
       document.getElementById('screenAdmin').classList.add('hidden');
       document.getElementById('screen1').classList.remove('hidden');
+      cargarDatosNube();
     }
 
     function irASeleccion() {
@@ -480,12 +543,23 @@
       const total = (seleccionados.length * precioPorTicket).toFixed(2);
       document.getElementById('montoFinal').innerText = `$${total} USD`;
 
-      // Configurar enlace de PayPal dinámico con el monto exacto
       const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TU_CORREO_PAYPAL@dominio.com&item_name=Rifa+The+Win+Tickets&amount=${total}&currency_code=USD`;
       document.getElementById('paypalBtn').href = paypalUrl;
 
+      const numeroWhatsApp = "593991234567"; // Reemplaza con tu número real de WhatsApp con código de país
+      const mensajeWA = encodeURIComponent(`Hola, soy ${nombre} ${apellidos}, acabo de seleccionar los boletos: ${seleccionados.join(', ')} por un monto de $${total} USD. Adjunto mi comprobante de pago.`);
+      document.getElementById('whatsappBtn').href = `https://wa.me/${numeroWhatsApp}?text=${mensajeWA}`;
+
+      comprobanteEnviado = false;
+      document.getElementById('btnFinalizar').disabled = true;
+
       document.getElementById('screen3').classList.add('hidden');
       document.getElementById('screen4').classList.remove('hidden');
+    }
+
+    function habilitarFinalizacion() {
+      comprobanteEnviado = true;
+      document.getElementById('btnFinalizar').disabled = false;
     }
 
     function girarRuleta() {
@@ -534,24 +608,34 @@
       }, 2000);
     }
 
-    function finalizarCompra() {
+    async function finalizarCompra() {
+      if (!comprobanteEnviado) {
+        alert('Debes hacer clic en el botón de WhatsApp para enviar tu comprobante primero.');
+        return;
+      }
+
       const nombre = document.getElementById('nombre').value;
       const apellidos = document.getElementById('apellidos').value;
       const cedula = document.getElementById('cedula').value;
       const telefono = document.getElementById('telefono').value;
       
-      // Registrar boletos como vendidos
-      seleccionados.forEach(n => vendidosGlobales.push(n));
+      let nuevosVendidos = [...vendidosGlobales];
+      seleccionados.forEach(n => {
+        if (!nuevosVendidos.includes(n)) nuevosVendidos.push(n);
+      });
 
-      // Guardar en localStorage para mantener persistencia local en GitHub Pages
-      let compradores = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
-      compradores.push({ nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
-      localStorage.setItem('compradores_rifa', JSON.stringify(compradores));
-      localStorage.setItem('vendidos_rifa', JSON.stringify(vendidosGlobales));
+      let nuevosCompradores = [...compradoresGlobales];
+      nuevosCompradores.push({ nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
 
-      alert('¡Compra registrada con éxito! Gracias por participar.');
-      irAPrincipal();
-      renderizarTabla7000();
+      await guardarDatosNube(nuevosVendidos, nuevosCompradores);
+
+      document.getElementById('txtBoletosFinales').innerText = '#' + seleccionados.join(', #');
+      document.getElementById('screen4').classList.add('hidden');
+      document.getElementById('screenGracias').classList.remove('hidden');
+
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+      }
     }
 
     function abrirAdminLogin() {
@@ -561,21 +645,20 @@
       document.getElementById('adminDashboard').classList.add('hidden');
     }
 
-    function verificarAdmin() {
+    async function verificarAdmin() {
       const u = document.getElementById('adminUser').value;
       const p = document.getElementById('adminPass').value;
 
-      // Cambia aquí tu usuario y contraseña de administrador
       if (u === 'admin' && p === 'admin123') {
         document.getElementById('adminLoginBox').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
         
-        // Cargar datos en el panel
+        await cargarDatosNube();
         document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
-        const compradores = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
+        
         let tbody = document.getElementById('adminTablaCompradores');
         tbody.innerHTML = '';
-        compradores.forEach(c => {
+        compradoresGlobales.forEach(c => {
           tbody.innerHTML += `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.telefono}</td><td>${c.boletos.join(', ')}</td></tr>`;
         });
       } else {
@@ -603,9 +686,7 @@
     }
 
     window.onload = function() {
-      // Cargar datos guardados previamente
-      vendidosGlobales = JSON.parse(localStorage.getItem('vendidos_rifa') || '[]');
-      renderizarTabla7000();
+      cargarDatosNube();
       dibujarRuletaEstetica();
     };
   </script>
