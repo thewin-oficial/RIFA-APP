@@ -251,3 +251,247 @@
       <div class="pkg-card popular" onclick="seleccionarPaquete(20)">
         <div class="badge-popular">MÁS POPULAR</div>
         <div class="pkg-tickets">20 <span style="font-size:16px;">TICKETS</span></div>
+        <div class="pkg-price">$20 USD</div>
+        <button class="btn-pkg">GIRAR RULETA x20</button>
+      </div>
+    </div>
+
+    <!-- PANTALLA 2: RULETA Y SELECCIÓN -->
+    <div id="screen2" class="hidden">
+      <h2 style="color: #FFD700; text-align: center; font-weight: 800;">RULETA DE NÚMEROS</h2>
+      <div class="card glow-gold" style="text-align: center;">
+        <p style="font-size: 14px; color: #aaa; margin: 0 0 10px;">
+          Giros pendientes: <b id="girosRestantes" style="color:#00E676; font-size: 18px;">0</b>
+        </p>
+        <div class="wheel-container">
+          <div class="wheel-pointer"></div>
+          <canvas id="wheel" width="180" height="180"></canvas>
+        </div>
+        <button id="btnGirar" class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; padding: 14px;" onclick="girarRuleta()">🎰 ¡GIRAR RULETA!</button>
+      </div>
+
+      <p style="text-align: center; font-size: 13px; color: #aaa; margin-top: 15px;">Tus números obtenidos:</p>
+      <div id="gridNumeros" class="grid"></div>
+
+      <div class="card" style="margin-top: 15px;">
+        <div style="display:flex; justify-content: space-between; font-size: 15px;">
+          <span>Obtenidos:</span>
+          <b id="cantSeleccionados" style="color: #FFD700;">0</b>
+        </div>
+        <div style="display:flex; justify-content: space-between; font-size: 18px; margin-top: 8px;">
+          <span>Total a pagar:</span>
+          <b id="totalPagar" style="color: #00E676;">$0.00 USD</b>
+        </div>
+        <button id="btnContinuar" class="btn" onclick="irAFormulario()">CONTINUAR CON MIS DATOS ➔</button>
+        <button class="btn btn-sec" onclick="irAPrincipal()">◄ VOLVER A PAQUETES</button>
+      </div>
+    </div>
+
+    <!-- PANTALLA 3: DATOS -->
+    <div id="screen3" class="hidden">
+      <h2 style="color: #FFD700; text-align: center; margin-bottom: 5px; font-weight: 800;">DATOS DE FACTURACIÓN</h2>
+      <div class="card glow-gold">
+        <div class="form-row">
+          <div class="form-group"><label>Nombre <span>*</span></label><input type="text" id="nombre" placeholder="Tu Nombre"></div>
+          <div class="form-group"><label>Apellidos <span>*</span></label><input type="text" id="apellidos" placeholder="Tus Apellidos"></div>
+        </div>
+        <div class="form-group"><label>Cédula de Identidad <span>*</span></label><input type="text" id="cedula" placeholder="Cédula / RUC"></div>
+        <div class="form-group"><label>Provincia <span>*</span></label>
+          <select id="provincia">
+            <option value="">Selecciona tu provincia...</option>
+            <option value="Azuay">Azuay</option><option value="Guayas">Guayas</option><option value="Pichincha">Pichincha</option><option value="Tungurahua">Tungurahua</option><option value="Manabí">Manabí</option><option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Teléfono / WhatsApp <span>*</span></label><input type="tel" id="telefono" placeholder="Ej: 0991234567"></div>
+        <div class="form-group"><label>Correo electrónico <span>*</span></label><input type="email" id="email" placeholder="correo@ejemplo.com"></div>
+        <div class="form-group"><label>Confirmar correo <span>*</span></label><input type="email" id="confirmEmail" placeholder="Confirma tu correo"></div>
+
+        <button class="btn" onclick="irAMetodosPago()">IR A MÉTODOS DE PAGO ➔</button>
+        <button class="btn btn-sec" onclick="irASeleccion()">◄ VOLVER A NÚMEROS</button>
+      </div>
+    </div>
+
+    <!-- PANTALLA 4: PAGO -->
+    <div id="screen4" class="hidden">
+      <h2 style="color: #FFD700; text-align: center; font-weight: 800;">MÉTODOS DE PAGO</h2>
+      <div class="card glow-gold">
+        <div style="background: #181818; padding: 12px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
+          <span style="color:#aaa; font-size:13px;">Monto total a pagar:</span><br>
+          <span id="montoFinal" style="color: #00E676; font-size: 26px; font-weight: 900;">$0.00 USD</span>
+        </div>
+        
+        <!-- Produbanco -->
+        <div class="pago-card highlight">
+          <div class="pago-header">
+            <div style="background:#006837; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px;">P</div>
+            <div>
+              <h4 style="margin: 0; color: #FFD700; font-size: 15px;">Produbanco</h4>
+              <span style="font-size: 11px; color: #888;">Grupo Promerica</span>
+            </div>
+          </div>
+          <div class="pago-details">
+            <b>Tipo:</b> Cuenta de Ahorros<br>
+            <b>Número:</b> 20001992595[cite: 6]<br>
+            <b>Titular:</b> Sergio Guizado García[cite: 6]
+          </div>
+        </div>
+
+        <!-- Banco Pichincha -->
+        <div class="pago-card highlight">
+          <div class="pago-header">
+            <div style="background:#FFCC00; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#000; font-weight:900; font-size:14px;">BP</div>
+            <div>
+              <h4 style="margin: 0; color: #FFD700; font-size: 15px;">Banco Pichincha</h4>
+              <span style="font-size: 11px; color: #888;">Nacional</span>
+            </div>
+          </div>
+          <div class="pago-details">
+            <b>Tipo:</b> Cuenta de Ahorro Transaccional<br>
+            <b>Número:</b> 4998011400[cite: 7]<br>
+            <b>Titular:</b> Sergio Guizado García[cite: 7]
+          </div>
+        </div>
+
+        <!-- PayPal -->
+        <div class="pago-card highlight" style="text-align: center;">
+          <h4 style="margin: 0 0 5px; color: #FFD700;">PayPal</h4>
+        </div>
+
+        <button class="btn btn-sec" onclick="irAFormulario()" style="margin-top: 15px;">◄ VOLVER A MIS DATOS</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCRIPT DE FUNCIONALIDAD CON RULETA GIRATORIA -->
+  <script>
+    let giros = 0;
+    let seleccionados = [];
+    let precioPorTicket = 1;
+    let anguloActual = 0;
+
+    function seleccionarPaquete(cantidad) {
+      giros = cantidad;
+      seleccionados = [];
+      document.getElementById('girosRestantes').innerText = giros;
+      document.getElementById('cantSeleccionados').innerText = '0';
+      document.getElementById('totalPagar').innerText = '$0.00 USD';
+      document.getElementById('gridNumeros').innerHTML = '';
+      document.getElementById('btnGirar').disabled = false;
+      
+      document.getElementById('screen1').classList.add('hidden');
+      document.getElementById('screen2').classList.remove('hidden');
+      dibujarRuletaEstetica();
+    }
+
+    function irAPrincipal() {
+      document.getElementById('screen2').classList.add('hidden');
+      document.getElementById('screen1').classList.remove('hidden');
+    }
+
+    function irASeleccion() {
+      document.getElementById('screen3').classList.add('hidden');
+      document.getElementById('screen2').classList.remove('hidden');
+    }
+
+    function irAFormulario() {
+      if (seleccionados.length === 0) {
+        alert('Debes girar y obtener al menos un número.');
+        return;
+      }
+      document.getElementById('screen2').classList.add('hidden');
+      document.getElementById('screen3').classList.remove('hidden');
+    }
+
+    function irAMetodosPago() {
+      const nombre = document.getElementById('nombre').value;
+      const apellidos = document.getElementById('apellidos').value;
+      const cedula = document.getElementById('cedula').value;
+      const telefono = document.getElementById('telefono').value;
+      const email = document.getElementById('email').value;
+
+      if (!nombre || !apellidos || !cedula || !telefono || !email) {
+        alert('Por favor completa todos los campos obligatorios.');
+        return;
+      }
+
+      const total = (seleccionados.length * precioPorTicket).toFixed(2);
+      document.getElementById('montoFinal').innerText = `$${total} USD`;
+
+      document.getElementById('screen3').classList.add('hidden');
+      document.getElementById('screen4').classList.remove('hidden');
+    }
+
+    function girarRuleta() {
+      if (giros <= 0) {
+        alert('No te quedan giros pendientes.');
+        return;
+      }
+
+      giros--;
+      document.getElementById('girosRestantes').innerText = giros;
+
+      // Animación de giro real de la ruleta
+      const canvas = document.getElementById('wheel');
+      anguloActual += 1440 + Math.floor(Math.random() * 360); // Gira varias vueltas completas más un extra aleatorio
+      canvas.style.transform = `rotate(${anguloActual}deg)`;
+
+      // Generar número aleatorio entre 1 y 7000
+      let numRandom = Math.floor(Math.random() * 7000) + 1;
+      while (seleccionados.includes(numRandom)) {
+        numRandom = Math.floor(Math.random() * 7000) + 1;
+      }
+
+      seleccionados.push(numRandom);
+
+      // Actualizar grid de números obtenidos
+      setTimeout(() => {
+        const grid = document.getElementById('gridNumeros');
+        grid.innerHTML = '';
+        seleccionados.forEach(n => {
+          const div = document.createElement('div');
+          div.className = 'num sel';
+          div.innerText = n;
+          grid.appendChild(div);
+        });
+
+        document.getElementById('cantSeleccionados').innerText = seleccionados.length;
+        const total = (seleccionados.length * precioPorTicket).toFixed(2);
+        document.getElementById('totalPagar').innerText = `$${total} USD`;
+
+        if (giros === 0) {
+          document.getElementById('btnGirar').disabled = true;
+          if (typeof confetti === 'function') {
+            confetti();
+          }
+        }
+      }, 1800); // Espera a que termine de girar la ruleta para mostrar los números
+    }
+
+    function dibujarRuletaEstetica() {
+      const canvas = document.getElementById('wheel');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const colors = ['#FFD700', '#FFA500', '#FF4500', '#DAA520', '#FF8C00'];
+      const slices = 5;
+      const sliceAngle = (2 * Math.PI) / slices;
+
+      for (let i = 0; i < slices; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(90, 90);
+        ctx.arc(90, 90, 85, i * sliceAngle, (i + 1) * sliceAngle);
+        ctx.lineTo(90, 90);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    window.onload = function() {
+      dibujarRuletaEstetica();
+    };
+  </script>
+</body>
+</html>
