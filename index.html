@@ -187,9 +187,9 @@
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
         <h3 style="margin: 0; color: #bbb; font-weight: 600;">KEEWAY MINNIX 150 🛵</h3>
         
-        <!-- FOTO PRINCIPAL GRANDE: Moto de frente con calle -->
+        <!-- FOTO PRINCIPAL GRANDE: Moto en la calle -->
         <div class="prize-img-container">
-          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Moto Keeway Minnix Principal">
+          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48.jpeg" alt="Moto en la Calle">
         </div>
 
         <div class="card glow-gold" style="text-align: left; padding: 15px; margin-top: 15px;">
@@ -198,7 +198,7 @@
             <!-- 1. Teléfonos -->
             <div class="mini-prize-card">
               <div class="mini-prize-img">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48.jpeg" alt="Teléfonos y Accesorios">
+                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Teléfonos y Accesorios">
               </div>
               <div class="mini-prize-title">Teléfonos y Accesorios</div>
             </div>
@@ -366,5 +366,127 @@
     </div>
 
   </div>
+
+  <!-- SCRIPT DE FUNCIONALIDAD -->
+  <script>
+    let giros = 0;
+    let seleccionados = [];
+    let precioPorTicket = 1;
+
+    function seleccionarPaquete(cantidad) {
+      giros = cantidad;
+      seleccionados = [];
+      document.getElementById('girosRestantes').innerText = giros;
+      document.getElementById('cantSeleccionados').innerText = '0';
+      document.getElementById('totalPagar').innerText = '$0.00 USD';
+      document.getElementById('gridNumeros').innerHTML = '';
+      
+      document.getElementById('screen1').classList.add('hidden');
+      document.getElementById('screen2').classList.remove('hidden');
+      dibujarRuletaEstetica();
+    }
+
+    function irAPrincipal() {
+      document.getElementById('screen2').classList.add('hidden');
+      document.getElementById('screen1').classList.remove('hidden');
+    }
+
+    function irASeleccion() {
+      document.getElementById('screen3').classList.add('hidden');
+      document.getElementById('screen2').classList.remove('hidden');
+    }
+
+    function irAFormulario() {
+      if (seleccionados.length === 0) {
+        alert('Debes girar y obtener al menos un número.');
+        return;
+      }
+      document.getElementById('screen2').classList.add('hidden');
+      document.getElementById('screen3').classList.remove('hidden');
+    }
+
+    function irAMetodosPago() {
+      const nombre = document.getElementById('nombre').value;
+      const apellidos = document.getElementById('apellidos').value;
+      const cedula = document.getElementById('cedula').value;
+      const telefono = document.getElementById('telefono').value;
+      const email = document.getElementById('email').value;
+
+      if (!nombre || !apellidos || !cedula || !telefono || !email) {
+        alert('Por favor completa todos los campos obligatorios.');
+        return;
+      }
+
+      const total = (seleccionados.length * precioPorTicket).toFixed(2);
+      document.getElementById('montoFinal').innerText = `$${total} USD`;
+
+      document.getElementById('screen3').classList.add('hidden');
+      document.getElementById('screen4').classList.remove('hidden');
+    }
+
+    function girarRuleta() {
+      if (giros <= 0) {
+        alert('No te quedan giros pendientes.');
+        return;
+      }
+
+      giros--;
+      document.getElementById('girosRestantes').innerText = giros;
+
+      // Generar número aleatorio entre 1 y 7000
+      let numRandom = Math.floor(Math.random() * 7000) + 1;
+      while (seleccionados.includes(numRandom)) {
+        numRandom = Math.floor(Math.random() * 7000) + 1;
+      }
+
+      seleccionados.push(numRandom);
+
+      // Actualizar grid
+      const grid = document.getElementById('gridNumeros');
+      grid.innerHTML = '';
+      seleccionados.forEach(n => {
+        const div = document.createElement('div');
+        div.className = 'num sel';
+        div.innerText = n;
+        grid.appendChild(div);
+      });
+
+      document.getElementById('cantSeleccionados').innerText = seleccionados.length;
+      const total = (seleccionados.length * precioPorTicket).toFixed(2);
+      document.getElementById('totalPagar').innerText = `$${total} USD`;
+
+      if (giros === 0) {
+        document.getElementById('btnGirar').disabled = true;
+        if (typeof confetti === 'function') {
+          confetti();
+        }
+      }
+    }
+
+    function dibujarRuletaEstetica() {
+      const canvas = document.getElementById('wheel');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      const colors = ['#FFD700', '#FFA500', '#FF4500', '#DAA520', '#FF8C00'];
+      const slices = 5;
+      const sliceAngle = (2 * Math.PI) / slices;
+
+      for (let i = 0; i < slices; i++) {
+        ctx.beginPath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.moveTo(90, 90);
+        ctx.arc(90, 90, 85, i * sliceAngle, (i + 1) * sliceAngle);
+        ctx.lineTo(90, 90);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+
+    window.onload = function() {
+      dibujarRuletaEstetica();
+    };
+  </script>
 </body>
 </html>
