@@ -7,12 +7,11 @@
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- SDK de Supabase para sincronización en la nube entre dispositivos -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script type="text/javascript">
     (function(){
-      emailjs.init("TU_PUBLIC_KEY"); 
+      emailjs.init("TU_PUBLIC_KEY"); // Reemplaza con tu Public Key de EmailJS
     })();
   </script>
 
@@ -373,11 +372,12 @@
         <h2 style="color: #00E676; font-size: 28px; font-weight: 900; margin-bottom: 10px;">¡COMPRA REGISTRADA!</h2>
         <p style="color: #fff; font-size: 15px; line-height: 1.6;">Tus números ya han sido apartados con éxito en el sistema.</p>
         <div style="background: #151515; padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #333;">
+          <span style="color: #aaa; font-size: 13px;">Nº de Orden:</span> <b id="txtOrdenCompra" style="color: #00E676; font-size: 16px;">#WIN-0000</b><br>
           <span style="color: #aaa; font-size: 13px;">Tus boletos asignados:</span><br>
           <b id="txtBoletosFinales" style="color: #FFD700; font-size: 18px;">#0000</b>
         </div>
         <h3 style="color: #FFD700; font-size: 22px; margin: 15px 0;">¡Mucha suerte en el sorteo! 🍀</h3>
-        <p style="font-size: 12px; color: #888; margin-bottom: 25px;">Pronto nos pondremos en contacto contigo a través de tus datos de registro.</p>
+        <p style="font-size: 12px; color: #888; margin-bottom: 25px;">Se ha enviado un correo con tu factura y el mensaje de agradecimiento.</p>
         <button class="btn" onclick="irAPrincipal()">VOLVER AL INICIO</button>
       </div>
     </div>
@@ -403,6 +403,7 @@
           <table>
             <thead>
               <tr>
+                <th>Nº Orden</th>
                 <th>Comprador</th>
                 <th>Cédula</th>
                 <th>Teléfono</th>
@@ -419,7 +420,6 @@
   </div>
 
   <script>
-    // CONFIGURA AQUÍ TUS CREDENCIALES DE SUPABASE (GRATIS EN LA NUBE)
     const SUPABASE_URL = 'TU_SUPABASE_URL';
     const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
     const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
@@ -434,7 +434,6 @@
 
     async function cargarDatosNube() {
       if (!supabaseClient) {
-        // Fallback local si no se configuran credenciales todavía
         vendidosGlobales = JSON.parse(localStorage.getItem('vendidos_rifa') || '[]');
         compradoresGlobales = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
         renderizarTabla7000();
@@ -456,7 +455,6 @@
       vendidosGlobales = nuevosVendidos;
       compradoresGlobales = nuevosCompradores;
       
-      // Guardar también localmente para respaldo inmediato
       localStorage.setItem('vendidos_rifa', JSON.stringify(vendidosGlobales));
       localStorage.setItem('compradores_rifa', JSON.stringify(compradoresGlobales));
 
@@ -546,7 +544,7 @@
       const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TU_CORREO_PAYPAL@dominio.com&item_name=Rifa+The+Win+Tickets&amount=${total}&currency_code=USD`;
       document.getElementById('paypalBtn').href = paypalUrl;
 
-      const numeroWhatsApp = "593991234567"; // Reemplaza con tu número real de WhatsApp con código de país
+      const numeroWhatsApp = "593991234567"; // Reemplaza con tu número de WhatsApp
       const mensajeWA = encodeURIComponent(`Hola, soy ${nombre} ${apellidos}, acabo de seleccionar los boletos: ${seleccionados.join(', ')} por un monto de $${total} USD. Adjunto mi comprobante de pago.`);
       document.getElementById('whatsappBtn').href = `https://wa.me/${numeroWhatsApp}?text=${mensajeWA}`;
 
@@ -618,6 +616,11 @@
       const apellidos = document.getElementById('apellidos').value;
       const cedula = document.getElementById('cedula').value;
       const telefono = document.getElementById('telefono').value;
+      const email = document.getElementById('email').value;
+      
+      const numeroOrden = '#WIN-' + Math.floor(10000 + Math.random() * 90000);
+      const total = (seleccionados.length * precioPorTicket).toFixed(2);
+      const boletosStr = '#' + seleccionados.join(', #');
       
       let nuevosVendidos = [...vendidosGlobales];
       seleccionados.forEach(n => {
@@ -625,11 +628,27 @@
       });
 
       let nuevosCompradores = [...compradoresGlobales];
-      nuevosCompradores.push({ nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
+      nuevosCompradores.push({ orden: numeroOrden, nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
 
       await guardarDatosNube(nuevosVendidos, nuevosCompradores);
 
-      document.getElementById('txtBoletosFinales').innerText = '#' + seleccionados.join(', #');
+      // ENVIAR FACTURA Y MENSAJE DE AGRADECIMIENTO POR CORREO
+      if (typeof emailjs !== 'undefined') {
+        emailjs.send("TU_SERVICE_ID", "TU_TEMPLATE_ID", {
+          to_email: email,
+          to_name: `${nombre} ${apellidos}`,
+          orden: numeroOrden,
+          boletos: boletosStr,
+          monto: `$${total} USD`
+        }).then(() => {
+          console.log("Correo enviado con éxito.");
+        }).catch((err) => {
+          console.error("Error al enviar correo:", err);
+        });
+      }
+
+      document.getElementById('txtOrdenCompra').innerText = numeroOrden;
+      document.getElementById('txtBoletosFinales').innerText = boletosStr;
       document.getElementById('screen4').classList.add('hidden');
       document.getElementById('screenGracias').classList.remove('hidden');
 
@@ -659,7 +678,7 @@
         let tbody = document.getElementById('adminTablaCompradores');
         tbody.innerHTML = '';
         compradoresGlobales.forEach(c => {
-          tbody.innerHTML += `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.telefono}</td><td>${c.boletos.join(', ')}</td></tr>`;
+          tbody.innerHTML += `<tr><td><b>${c.orden || '#WIN-0000'}</b></td><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.telefono}</td><td>${c.boletos.join(', ')}</td></tr>`;
         });
       } else {
         alert('Usuario o contraseña incorrectos.');
