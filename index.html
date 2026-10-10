@@ -7,6 +7,8 @@
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- SDK de Supabase para guardar los registros de los compradores -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script type="text/javascript">
     (function(){
@@ -171,24 +173,16 @@
     .wheel-pointer { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #FF3366; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 10; }
     
     .number-boom {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: rgba(0, 0, 0, 0.95);
-      border: 3px solid #00E676;
-      color: #00E676;
-      font-size: 28px;
-      font-weight: 900;
-      padding: 12px 24px;
-      border-radius: 16px;
-      box-shadow: 0 0 30px #00E676;
-      z-index: 20;
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      background: rgba(0, 0, 0, 0.95); border: 3px solid #00E676; color: #00E676;
+      font-size: 28px; font-weight: 900; padding: 12px 24px; border-radius: 16px;
+      box-shadow: 0 0 30px #00E676; z-index: 20; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .number-boom.show {
-      transform: translate(-50%, -50%) scale(1.2);
-    }
+    .number-boom.show { transform: translate(-50%, -50%) scale(1.2); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; text-align: left; }
+    th, td { border: 1px solid #333; padding: 8px; }
+    th { background: #222; color: #FFD700; }
   </style>
 </head>
 <body>
@@ -197,7 +191,7 @@
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <div class="logo-circle">
+        <div class="logo-circle" onclick="abrirAdminLogin()" style="cursor: pointer;" title="Panel Admin">
           <span>THE WIN</span>
         </div>
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
@@ -233,12 +227,12 @@
       <div class="card glow-gold">
         <div style="display: flex; justify-content: space-between; font-size: 14px;">
           <b>PROGRESO GENERAL</b>
-          <b style="color: #FFD700;"><span id="vendidos1">0</span>/7000</b>
+          <b style="color: #FFD700;"><span id="vendidosGlobal">0</span>/7000</b>
         </div>
         <div class="bar" style="margin-top: 10px;">
-          <div class="fill" id="fill1"></div>
+          <div class="fill" id="fillGlobal" style="width: 0%;"></div>
         </div>
-        <p id="porcTxt" style="text-align: center; margin: 8px 0 0; font-weight: 800; font-size: 13px; color: #FFD700;">0% VENDIDO</p>
+        <p id="porcGlobalTxt" style="text-align: center; margin: 8px 0 0; font-weight: 800; font-size: 13px; color: #FFD700;">0% VENDIDO</p>
       </div>
 
       <h2 style="color: #FFD700; text-align: center; margin: 25px 0 15px; font-weight: 800;">🔥 ELIGE TU PAQUETE</h2>
@@ -263,7 +257,7 @@
       </div>
     </div>
 
-    <!-- PANTALLA 2: RULETA Y TABLA DE 7000 NÚMEROS -->
+    <!-- PANTALLA 2: RULETA Y TABLA DE NÚMEROS -->
     <div id="screen2" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">RULETA DE NÚMEROS</h2>
       <div class="card glow-gold" style="text-align: center;">
@@ -320,7 +314,7 @@
       </div>
     </div>
 
-    <!-- PANTALLA 4: PAGO -->
+    <!-- PANTALLA 4: PAGO CON PAYPAL Y BANCOS -->
     <div id="screen4" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">MÉTODOS DE PAGO</h2>
       <div class="card glow-gold">
@@ -335,14 +329,10 @@
             <div style="background:#006837; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px;">P</div>
             <div>
               <h4 style="margin: 0; color: #FFD700; font-size: 15px;">Produbanco</h4>
-              <span style="font-size: 11px; color: #888;">Grupo Promerica</span>
+              <span style="font-size: 11px; color: #888;">Cuenta de Ahorros: 20001992595</span>
             </div>
           </div>
-          <div class="pago-details">
-            <b>Tipo:</b> Cuenta de Ahorros<br>
-            <b>Número:</b> 20001992595<br>
-            <b>Titular:</b> Sergio Guizado García
-          </div>
+          <div class="pago-details"><b>Titular:</b> Sergio Guizado García</div>
         </div>
 
         <!-- Banco Pichincha -->
@@ -351,42 +341,90 @@
             <div style="background:#FFCC00; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#000; font-weight:900; font-size:14px;">BP</div>
             <div>
               <h4 style="margin: 0; color: #FFD700; font-size: 15px;">Banco Pichincha</h4>
-              <span style="font-size: 11px; color: #888;">Nacional</span>
+              <span style="font-size: 11px; color: #888;">Ahorros: 4998011400</span>
             </div>
           </div>
-          <div class="pago-details">
-            <b>Tipo:</b> Cuenta de Ahorro Transaccional<br>
-            <b>Número:</b> 4998011400<br>
-            <b>Titular:</b> Sergio Guizado García
-          </div>
+          <div class="pago-details"><b>Titular:</b> Sergio Guizado García</div>
         </div>
 
-        <!-- PayPal -->
+        <!-- PayPal Automatizado -->
         <div class="pago-card highlight" style="text-align: center;">
-          <h4 style="margin: 0 0 5px; color: #FFD700;">PayPal</h4>
+          <h4 style="margin: 0 0 5px; color: #FFD700;">PayPal Seguro</h4>
+          <p style="font-size: 11px; color: #aaa; margin: 0 0 10px;">Paga de forma instantánea con tarjeta o saldo PayPal.</p>
+          <a id="paypalBtn" href="#" target="_blank" style="background: #0070BA; color: #fff; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block;">Pagar con PayPal ➔</a>
         </div>
 
-        <button class="btn btn-sec" onclick="irAFormulario()" style="margin-top: 15px;">◄ VOLVER A MIS DATOS</button>
+        <button class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; margin-top: 10px;" onclick="finalizarCompra()">✅ YA REALICÉ EL PAGO</button>
+        <button class="btn btn-sec" onclick="irAFormulario()" style="margin-top: 10px;">◄ VOLVER A MIS DATOS</button>
+      </div>
+    </div>
+
+    <!-- PANTALLA 5: PANEL DE ADMINISTRADOR SECRETO -->
+    <div id="screenAdmin" class="hidden">
+      <h2 style="color: #FFD700; text-align: center; font-weight: 800;">PANEL DE ADMINISTRADOR</h2>
+      
+      <!-- Login Admin -->
+      <div id="adminLoginBox" class="card glow-gold">
+        <div class="form-group"><label>Usuario Admin</label><input type="text" id="adminUser" placeholder="Usuario"></div>
+        <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="Contraseña"></div>
+        <button class="btn" onclick="verificarAdmin()">INGRESAR AL PANEL</button>
+        <button class="btn btn-sec" onclick="irAPrincipal()" style="margin-top:10px;">◄ VOLVER A LA WEB</button>
+      </div>
+
+      <!-- Contenido Admin -->
+      <div id="adminDashboard" class="card glow-gold hidden">
+        <div style="background: #181818; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px;">
+          <span style="color:#aaa; font-size:13px;">Total Números Vendidos:</span><br>
+          <span id="adminTotalVendidos" style="color: #FFD700; font-size: 28px; font-weight: 900;">0 / 7000</span>
+        </div>
+        
+        <h4 style="color: #FFD700; margin-bottom: 5px;">Lista de Compradores:</h4>
+        <div style="max-height: 250px; overflow-y: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Comprador</th>
+                <th>Cédula</th>
+                <th>Teléfono</th>
+                <th>Boletos</th>
+              </tr>
+            </thead>
+            <tbody id="adminTablaCompradores">
+              <!-- Se llena dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-sec" onclick="irAPrincipal()" style="margin-top: 15px;">CERRAR SESIÓN</button>
       </div>
     </div>
 
   </div>
 
   <script>
+    // Configuración de Supabase (puedes crear tu cuenta gratuita en supabase.com y poner tus credenciales aquí)
+    const SUPABASE_URL = 'TU_SUPABASE_URL';
+    const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
+    const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
     let giros = 0;
     let seleccionados = [];
     let precioPorTicket = 1;
     let anguloActual = 0;
+    let vendidosGlobales = []; // Lista simulada o cargada de la nube
 
     function renderizarTabla7000() {
       const grid = document.getElementById('gridNumeros');
       grid.innerHTML = '';
-      // Creamos los 7000 números de forma limpia
       let html = '';
       for (let i = 1; i <= 7000; i++) {
-        html += `<div class="num" id="num-${i}">${i}</div>`;
+        let clase = vendidosGlobales.includes(i) ? 'num sel' : 'num';
+        html += `<div class="${clase}" id="num-${i}">${i}</div>`;
       }
       grid.innerHTML = html;
+      document.getElementById('vendidosGlobal').innerText = vendidosGlobales.length;
+      let porc = ((vendidosGlobales.length / 7000) * 100).toFixed(1);
+      document.getElementById('fillGlobal').style.width = porc + '%';
+      document.getElementById('porcGlobalTxt').innerText = porc + '% VENDIDO';
     }
 
     function seleccionarPaquete(cantidad) {
@@ -407,6 +445,9 @@
 
     function irAPrincipal() {
       document.getElementById('screen2').classList.add('hidden');
+      document.getElementById('screen3').classList.add('hidden');
+      document.getElementById('screen4').classList.add('hidden');
+      document.getElementById('screenAdmin').classList.add('hidden');
       document.getElementById('screen1').classList.remove('hidden');
     }
 
@@ -439,6 +480,10 @@
       const total = (seleccionados.length * precioPorTicket).toFixed(2);
       document.getElementById('montoFinal').innerText = `$${total} USD`;
 
+      // Configurar enlace de PayPal dinámico con el monto exacto
+      const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TU_CORREO_PAYPAL@dominio.com&item_name=Rifa+The+Win+Tickets&amount=${total}&currency_code=USD`;
+      document.getElementById('paypalBtn').href = paypalUrl;
+
       document.getElementById('screen3').classList.add('hidden');
       document.getElementById('screen4').classList.remove('hidden');
     }
@@ -454,34 +499,25 @@
       giros--;
       document.getElementById('girosRestantes').innerText = giros;
 
-      // Giro de ruleta visual
       const canvas = document.getElementById('wheel');
       anguloActual += 1440 + Math.floor(Math.random() * 360);
       canvas.style.transform = `rotate(${anguloActual}deg)`;
 
-      // Seleccionar número aleatorio que no se repita
       let numRandom = Math.floor(Math.random() * 7000) + 1;
-      while (seleccionados.includes(numRandom)) {
+      while (seleccionados.includes(numRandom) || vendidosGlobales.includes(numRandom)) {
         numRandom = Math.floor(Math.random() * 7000) + 1;
       }
       seleccionados.push(numRandom);
 
       setTimeout(() => {
-        // Muestra el número con efecto BOOM sobre la ruleta
         const boomBox = document.getElementById('boomBox');
         boomBox.innerText = '#' + numRandom;
         boomBox.classList.add('show');
 
-        // Lanzar confeti en el centro
         if (typeof confetti === 'function') {
-          confetti({
-            particleCount: 100,
-            spread: 80,
-            origin: { y: 0.45 }
-          });
+          confetti({ particleCount: 100, spread: 80, origin: { y: 0.45 } });
         }
 
-        // Marcar en la tabla grande de 7000
         const elem = document.getElementById('num-' + numRandom);
         if (elem) {
           elem.classList.add('sel');
@@ -498,16 +534,63 @@
       }, 2000);
     }
 
+    function finalizarCompra() {
+      const nombre = document.getElementById('nombre').value;
+      const apellidos = document.getElementById('apellidos').value;
+      const cedula = document.getElementById('cedula').value;
+      const telefono = document.getElementById('telefono').value;
+      
+      // Registrar boletos como vendidos
+      seleccionados.forEach(n => vendidosGlobales.push(n));
+
+      // Guardar en localStorage para mantener persistencia local en GitHub Pages
+      let compradores = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
+      compradores.push({ nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
+      localStorage.setItem('compradores_rifa', JSON.stringify(compradores));
+      localStorage.setItem('vendidos_rifa', JSON.stringify(vendidosGlobales));
+
+      alert('¡Compra registrada con éxito! Gracias por participar.');
+      irAPrincipal();
+      renderizarTabla7000();
+    }
+
+    function abrirAdminLogin() {
+      document.getElementById('screen1').classList.add('hidden');
+      document.getElementById('screenAdmin').classList.remove('hidden');
+      document.getElementById('adminLoginBox').classList.remove('hidden');
+      document.getElementById('adminDashboard').classList.add('hidden');
+    }
+
+    function verificarAdmin() {
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+
+      // Cambia aquí tu usuario y contraseña de administrador
+      if (u === 'admin' && p === 'admin123') {
+        document.getElementById('adminLoginBox').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        
+        // Cargar datos en el panel
+        document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
+        const compradores = JSON.parse(localStorage.getItem('compradores_rifa') || '[]');
+        let tbody = document.getElementById('adminTablaCompradores');
+        tbody.innerHTML = '';
+        compradores.forEach(c => {
+          tbody.innerHTML += `<tr><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.telefono}</td><td>${c.boletos.join(', ')}</td></tr>`;
+        });
+      } else {
+        alert('Usuario o contraseña incorrectos.');
+      }
+    }
+
     function dibujarRuletaEstetica() {
       const canvas = document.getElementById('wheel');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
       const colors = ['#FFD700', '#FFA500', '#FF4500', '#DAA520', '#FF8C00'];
       const slices = 5;
       const sliceAngle = (2 * Math.PI) / slices;
-
       for (let i = 0; i < slices; i++) {
         ctx.beginPath();
         ctx.fillStyle = colors[i % colors.length];
@@ -520,6 +603,9 @@
     }
 
     window.onload = function() {
+      // Cargar datos guardados previamente
+      vendidosGlobales = JSON.parse(localStorage.getItem('vendidos_rifa') || '[]');
+      renderizarTabla7000();
       dibujarRuletaEstetica();
     };
   </script>
