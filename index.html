@@ -11,7 +11,7 @@
 
   <script type="text/javascript">
     (function(){
-      emailjs.init("TU_PUBLIC_KEY"); // Reemplaza con tu Public Key de EmailJS
+      emailjs.init("TU_PUBLIC_KEY"); 
     })();
   </script>
 
@@ -181,8 +181,33 @@
     .number-boom.show { transform: translate(-50%, -50%) scale(1.2); }
 
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; text-align: left; }
-    th, td { border: 1px solid #333; padding: 8px; }
+    th, td { border: 1px solid #333; padding: 8px; vertical-align: middle; }
     th { background: #222; color: #FFD700; }
+    
+    .file-input-wrapper {
+      position: relative;
+      background: #181818;
+      border: 2px dashed #FFD700;
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .preview-img {
+      max-width: 100%;
+      max-height: 120px;
+      border-radius: 10px;
+      margin-top: 10px;
+      border: 1px solid #444;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -315,7 +340,7 @@
       </div>
     </div>
 
-    <!-- PANTALLA 4: PAGO CON WHATSAPP OBLIGATORIO -->
+    <!-- PANTALLA 4: PAGO CON SUBIDA DE COMPROBANTE Y WHATSAPP OBLIGATORIOS -->
     <div id="screen4" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">MÉTODOS DE PAGO</h2>
       <div class="card glow-gold">
@@ -354,19 +379,33 @@
           <a id="paypalBtn" href="#" target="_blank" style="background: #0070BA; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 13px;">Pagar con PayPal ➔</a>
         </div>
 
-        <!-- PASO OBLIGATORIO: WHATSAPP -->
-        <div style="background: rgba(0, 230, 118, 0.1); border: 2px dashed #00E676; padding: 15px; border-radius: 14px; text-align: center; margin: 15px 0;">
-          <p style="font-size: 13px; color: #00E676; font-weight: 700; margin: 0 0 10px;">⚠️ PASO OBLIGATORIO</p>
-          <p style="font-size: 12px; color: #ddd; margin: 0 0 12px;">Haz clic aquí para enviar tu comprobante por WhatsApp y habilitar tu registro.</p>
-          <a id="whatsappBtn" href="#" target="_blank" onclick="habilitarFinalizacion()" style="background: #25D366; color: #000; padding: 12px 18px; border-radius: 12px; text-decoration: none; font-weight: 900; display: inline-block; font-size: 14px;">💬 ENVIAR COMPROBANTE POR WHATSAPP</a>
+        <!-- PASO 1 OBLIGATORIO: SUBIR IMAGEN DEL COMPROBANTE -->
+        <div style="background: rgba(255, 215, 0, 0.08); border: 2px dashed #FFD700; padding: 15px; border-radius: 14px; text-align: center; margin: 15px 0;">
+          <p style="font-size: 13px; color: #FFD700; font-weight: 700; margin: 0 0 5px;">1️⃣ OBLIGATORIO: SUBE TU COMPROBANTE</p>
+          <p style="font-size: 11px; color: #bbb; margin: 0 0 10px;">Adjunta una captura o foto legible de tu transferencia.</p>
+          
+          <div class="file-input-wrapper">
+            <span id="fileTxtLabel" style="font-size: 13px; color: #FFD700; font-weight: bold;">📁 Haz clic aquí para adjuntar imagen</span>
+            <input type="file" id="inputComprobante" accept="image/*" onchange="procesarFotoComprobante(this)">
+            <img id="previewComprobante" class="preview-img" alt="Vista previa">
+          </div>
         </div>
+
+        <!-- PASO 2 OBLIGATORIO: ENVIAR POR WHATSAPP -->
+        <div style="background: rgba(0, 230, 118, 0.1); border: 2px dashed #00E676; padding: 15px; border-radius: 14px; text-align: center; margin: 15px 0;">
+          <p style="font-size: 13px; color: #00E676; font-weight: 700; margin: 0 0 10px;">2️⃣ OBLIGATORIO: ENVIAR POR WHATSAPP</p>
+          <p style="font-size: 12px; color: #ddd; margin: 0 0 12px;">Haz clic aquí para enviar el mensaje automático por WhatsApp.</p>
+          <a id="whatsappBtn" href="#" target="_blank" onclick="marcarWhatsAppEnviado()" style="background: #25D366; color: #000; padding: 12px 18px; border-radius: 12px; text-decoration: none; font-weight: 900; display: inline-block; font-size: 14px;">💬 ENVIAR POR WHATSAPP</a>
+        </div>
+
+        <p id="msgValidacionPasos" style="color: #ff4d4d; font-size: 12px; text-align: center; font-weight: bold; margin: 10px 0 0;">⚠️ Debes completar el Paso 1 (subir foto) y el Paso 2 (enviar WhatsApp) para habilitar este botón.</p>
 
         <button id="btnFinalizar" class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; margin-top: 10px;" disabled onclick="finalizarCompra()">✅ FINALIZAR Y REGISTRAR COMPRA</button>
         <button class="btn btn-sec" onclick="irAFormulario()" style="margin-top: 10px;">◄ VOLVER A MIS DATOS</button>
       </div>
     </div>
 
-    <!-- PANTALLA 5: AGRADECIMIENTO Y SUERTE -->
+    <!-- PANTALLA 5: AGRADECIMIENTO -->
     <div id="screenGracias" class="hidden" style="text-align: center; padding: 30px 10px;">
       <div class="card glow-gold" style="padding: 30px;">
         <h2 style="color: #00E676; font-size: 28px; font-weight: 900; margin-bottom: 10px;">¡COMPRA REGISTRADA!</h2>
@@ -377,7 +416,7 @@
           <b id="txtBoletosFinales" style="color: #FFD700; font-size: 18px;">#0000</b>
         </div>
         <h3 style="color: #FFD700; font-size: 22px; margin: 15px 0;">¡Mucha suerte en el sorteo! 🍀</h3>
-        <p style="font-size: 12px; color: #888; margin-bottom: 25px;">Se ha enviado un correo con tu factura y el mensaje de agradecimiento.</p>
+        <p style="font-size: 12px; color: #888; margin-bottom: 25px;">Se ha enviado una factura digital con el detalle a tu correo electrónico.</p>
         <button class="btn" onclick="irAPrincipal()">VOLVER AL INICIO</button>
       </div>
     </div>
@@ -399,15 +438,15 @@
         </div>
         
         <h4 style="color: #FFD700; margin-bottom: 5px;">Lista de Compradores:</h4>
-        <div style="max-height: 250px; overflow-y: auto;">
+        <div style="max-height: 300px; overflow-y: auto;">
           <table>
             <thead>
               <tr>
                 <th>Nº Orden</th>
                 <th>Comprador</th>
-                <th>Cédula</th>
-                <th>Teléfono</th>
+                <th>Datos</th>
                 <th>Boletos</th>
+                <th>Comprobante</th>
               </tr>
             </thead>
             <tbody id="adminTablaCompradores"></tbody>
@@ -430,7 +469,11 @@
     let anguloActual = 0;
     let vendidosGlobales = [];
     let compradoresGlobales = [];
-    let comprobanteEnviado = false;
+    
+    // VALIDACIÓN DE LOS 2 PASOS OBLIGATORIOS
+    let paso1Subido = false;
+    let paso2WhatsApp = false;
+    let fotoComprobanteBase64 = null;
 
     async function cargarDatosNube() {
       if (!supabaseClient) {
@@ -544,20 +587,60 @@
       const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TU_CORREO_PAYPAL@dominio.com&item_name=Rifa+The+Win+Tickets&amount=${total}&currency_code=USD`;
       document.getElementById('paypalBtn').href = paypalUrl;
 
-      const numeroWhatsApp = "593991234567"; // Reemplaza con tu número de WhatsApp
+      const numeroWhatsApp = "593991234567"; // Reemplaza con tu WhatsApp real
       const mensajeWA = encodeURIComponent(`Hola, soy ${nombre} ${apellidos}, acabo de seleccionar los boletos: ${seleccionados.join(', ')} por un monto de $${total} USD. Adjunto mi comprobante de pago.`);
       document.getElementById('whatsappBtn').href = `https://wa.me/${numeroWhatsApp}?text=${mensajeWA}`;
 
-      comprobanteEnviado = false;
-      document.getElementById('btnFinalizar').disabled = true;
+      // Reiniciar validación al entrar
+      paso1Subido = false;
+      paso2WhatsApp = false;
+      fotoComprobanteBase64 = null;
+      document.getElementById('previewComprobante').style.display = 'none';
+      document.getElementById('fileTxtLabel').innerText = '📁 Haz clic aquí para adjuntar imagen';
+      evaluarDesbloqueoBoton();
 
       document.getElementById('screen3').classList.add('hidden');
       document.getElementById('screen4').classList.remove('hidden');
     }
 
-    function habilitarFinalizacion() {
-      comprobanteEnviado = true;
-      document.getElementById('btnFinalizar').disabled = false;
+    function procesarFotoComprobante(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotoComprobanteBase64 = e.target.result;
+          const preview = document.getElementById('previewComprobante');
+          preview.src = fotoComprobanteBase64;
+          preview.style.display = 'inline-block';
+          document.getElementById('fileTxtLabel').innerText = '✅ Imagen adjuntada con éxito';
+          paso1Subido = true;
+          evaluarDesbloqueoBoton();
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function marcarWhatsAppEnviado() {
+      if (!paso1Subido) {
+        alert('⚠️ Primero debes adjuntar la imagen de tu comprobante en el Paso 1.');
+        return;
+      }
+      paso2WhatsApp = true;
+      evaluarDesbloqueoBoton();
+    }
+
+    function evaluarDesbloqueoBoton() {
+      const btn = document.getElementById('btnFinalizar');
+      const msg = document.getElementById('msgValidacionPasos');
+      
+      if (paso1Subido && paso2WhatsApp) {
+        btn.disabled = false;
+        msg.style.color = '#00E676';
+        msg.innerText = '✅ ¡Ambos pasos completados! Ya puedes finalizar tu compra.';
+      } else {
+        btn.disabled = true;
+        msg.style.color = '#ff4d4d';
+        msg.innerText = '⚠️ Debes completar el Paso 1 (subir foto) y el Paso 2 (enviar WhatsApp) para habilitar este botón.';
+      }
     }
 
     function girarRuleta() {
@@ -607,8 +690,12 @@
     }
 
     async function finalizarCompra() {
-      if (!comprobanteEnviado) {
-        alert('Debes hacer clic en el botón de WhatsApp para enviar tu comprobante primero.');
+      if (!paso1Subido) {
+        alert('Por favor sube la imagen de tu comprobante en el Paso 1.');
+        return;
+      }
+      if (!paso2WhatsApp) {
+        alert('Por favor haz clic en el botón de WhatsApp en el Paso 2.');
         return;
       }
 
@@ -628,11 +715,17 @@
       });
 
       let nuevosCompradores = [...compradoresGlobales];
-      nuevosCompradores.push({ orden: numeroOrden, nombre: `${nombre} ${apellidos}`, cedula, telefono, boletos: [...seleccionados] });
+      nuevosCompradores.push({ 
+        orden: numeroOrden, 
+        nombre: `${nombre} ${apellidos}`, 
+        cedula, 
+        telefono, 
+        boletos: [...seleccionados],
+        comprobante: fotoComprobanteBase64 
+      });
 
       await guardarDatosNube(nuevosVendidos, nuevosCompradores);
 
-      // ENVIAR FACTURA Y MENSAJE DE AGRADECIMIENTO POR CORREO
       if (typeof emailjs !== 'undefined') {
         emailjs.send("TU_SERVICE_ID", "TU_TEMPLATE_ID", {
           to_email: email,
@@ -640,11 +733,7 @@
           orden: numeroOrden,
           boletos: boletosStr,
           monto: `$${total} USD`
-        }).then(() => {
-          console.log("Correo enviado con éxito.");
-        }).catch((err) => {
-          console.error("Error al enviar correo:", err);
-        });
+        }).catch(err => console.error("Error al enviar correo:", err));
       }
 
       document.getElementById('txtOrdenCompra').innerText = numeroOrden;
@@ -678,7 +767,8 @@
         let tbody = document.getElementById('adminTablaCompradores');
         tbody.innerHTML = '';
         compradoresGlobales.forEach(c => {
-          tbody.innerHTML += `<tr><td><b>${c.orden || '#WIN-0000'}</b></td><td>${c.nombre}</td><td>${c.cedula}</td><td>${c.telefono}</td><td>${c.boletos.join(', ')}</td></tr>`;
+          let imgTag = c.comprobante ? `<a href="${c.comprobante}" target="_blank"><img src="${c.comprobante}" style="width:45px; height:45px; object-fit:cover; border-radius:6px; border:1px solid #FFD700;"></a>` : 'Sin foto';
+          tbody.innerHTML += `<tr><td><b>${c.orden || '#WIN-0000'}</b></td><td>${c.nombre}</td><td>CI: ${c.cedula}<br>Tel: ${c.telefono}</td><td>${c.boletos.join(', ')}</td><td style="text-align:center;">${imgTag}</td></tr>`;
         });
       } else {
         alert('Usuario o contraseña incorrectos.');
