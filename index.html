@@ -6,7 +6,7 @@
   <title>THE WIN - RIFA OFICIAL</title>
   
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script type="text/javascript">
     (function(){
@@ -102,7 +102,6 @@
       box-shadow: 0 0 25px rgba(255,215,0,0.5); overflow: hidden;
       color: #000; font-weight: 900; font-size: 12px; text-align: center;
     }
-    .logo-circle img { width: 100%; height: 100%; object-fit: cover; }
 
     .bar { background: #1a1a1a; height: 26px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid #333; }
     .fill { height: 100%; background: linear-gradient(90deg, #FFD700, #FF5722, #E91E63); width: 0%; transition: width 0.8s ease; box-shadow: 0 0 15px #FFD700; }
@@ -137,8 +136,7 @@
       justify-content: center; font-size: 12px; font-weight: 800; background: #141414; 
       border-radius: 10px; user-select: none; color: #777; 
     }
-    .num.sel { background: linear-gradient(135deg, #FFD700, #FF8C00); color: #000; font-weight: 900; border: none; box-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
-    .num.vend { background: #3a0d0d; color: #ff6b6b; border-color: #551111; font-weight: 900; }
+    .num.sel { background: linear-gradient(135deg, #00E676, #1DE9B6); color: #000; font-weight: 900; border: none; box-shadow: 0 0 12px rgba(0, 230, 118, 0.8); }
 
     .btn { 
       width: 100%; padding: 18px; border: none; border-radius: 16px; font-weight: 900; 
@@ -158,7 +156,6 @@
     label { font-size: 12px; color: #bbb; display: block; margin-bottom: 6px; font-weight: 600; }
     label span { color: #ff4d4d; }
     input, select { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #333; background: #111; color: #fff; font-size: 14px; outline: none; font-family: inherit; }
-    input:focus, select:focus { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
 
     .pago-card { 
       background: #151515; border: 1px solid #333; border-radius: 16px; 
@@ -169,9 +166,29 @@
     .pago-details { font-size: 13px; color: #ddd; background: #0d0d0d; padding: 10px; border-radius: 10px; border: 1px dashed #444; }
     .hidden { display: none !important; }
 
-    .wheel-container { position: relative; text-align: center; margin: 15px 0; display: inline-block; }
+    .wheel-container { position: relative; text-align: center; margin: 20px 0; display: inline-block; }
     #wheel { border: 4px solid #FFD700; border-radius: 50%; box-shadow: 0 0 25px rgba(255, 215, 0, 0.5); transition: transform 2s cubic-bezier(0.15, 0.9, 0.2, 1); }
-    .wheel-pointer { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #FF3366; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); z-index: 10; }
+    .wheel-pointer { width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-top: 22px solid #FF3366; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 10; }
+    
+    .number-boom {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(0, 0, 0, 0.95);
+      border: 3px solid #00E676;
+      color: #00E676;
+      font-size: 28px;
+      font-weight: 900;
+      padding: 12px 24px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px #00E676;
+      z-index: 20;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .number-boom.show {
+      transform: translate(-50%, -50%) scale(1.2);
+    }
   </style>
 </head>
 <body>
@@ -181,13 +198,11 @@
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
         <div class="logo-circle">
-          <span>LOGO</span>
-          <img src="" alt="Logo" onerror="this.style.display='none'">
+          <span>THE WIN</span>
         </div>
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
         <h3 style="margin: 0; color: #bbb; font-weight: 600;">KEEWAY MINNIX 150 🛵</h3>
         
-        <!-- FOTO PRINCIPAL GRANDE: Moto en la calle -->
         <div class="prize-img-container">
           <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48.jpeg" alt="Moto en la Calle">
         </div>
@@ -196,27 +211,19 @@
           <h4 style="color: #FFD700; margin: 0 0 10px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
           <div class="prizes-grid">
             <div class="mini-prize-card">
-              <div class="mini-prize-img">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Teléfonos">
-              </div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Teléfonos"></div>
               <div class="mini-prize-title">Teléfonos y Accesorios</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Moto Exhibición">
-              </div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Exhibición"></div>
               <div class="mini-prize-title">Moto en Exhibición</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Ángulo Moto">
-              </div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(1).jpeg" alt="Ángulo Moto"></div>
               <div class="mini-prize-title">Segundo Ángulo Moto</div>
             </div>
             <div class="mini-prize-card">
-              <div class="mini-prize-img">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Kit Sorpresa">
-              </div>
+              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/WhatsApp%20Image%202026-10-06%20at%2017.49.48%20(2).jpeg" alt="Kit Sorpresa"></div>
               <div class="mini-prize-title">Kit Sorpresa</div>
             </div>
           </div>
@@ -256,21 +263,24 @@
       </div>
     </div>
 
-    <!-- PANTALLA 2: RULETA Y SELECCIÓN -->
+    <!-- PANTALLA 2: RULETA Y TABLA DE 7000 NÚMEROS -->
     <div id="screen2" class="hidden">
       <h2 style="color: #FFD700; text-align: center; font-weight: 800;">RULETA DE NÚMEROS</h2>
       <div class="card glow-gold" style="text-align: center;">
         <p style="font-size: 14px; color: #aaa; margin: 0 0 10px;">
           Giros pendientes: <b id="girosRestantes" style="color:#00E676; font-size: 18px;">0</b>
         </p>
+        
         <div class="wheel-container">
           <div class="wheel-pointer"></div>
           <canvas id="wheel" width="180" height="180"></canvas>
+          <div id="boomBox" class="number-boom">#0000</div>
         </div>
+
         <button id="btnGirar" class="btn" style="background: linear-gradient(90deg, #00E676, #1DE9B6); color: #000; padding: 14px;" onclick="girarRuleta()">🎰 ¡GIRAR RULETA!</button>
       </div>
 
-      <p style="text-align: center; font-size: 13px; color: #aaa; margin-top: 15px;">Tus números obtenidos:</p>
+      <p style="text-align: center; font-size: 13px; color: #aaa; margin-top: 15px;">Tabla general de boletos (1 al 7000):</p>
       <div id="gridNumeros" class="grid"></div>
 
       <div class="card" style="margin-top: 15px;">
@@ -304,7 +314,6 @@
         </div>
         <div class="form-group"><label>Teléfono / WhatsApp <span>*</span></label><input type="tel" id="telefono" placeholder="Ej: 0991234567"></div>
         <div class="form-group"><label>Correo electrónico <span>*</span></label><input type="email" id="email" placeholder="correo@ejemplo.com"></div>
-        <div class="form-group"><label>Confirmar correo <span>*</span></label><input type="email" id="confirmEmail" placeholder="Confirma tu correo"></div>
 
         <button class="btn" onclick="irAMetodosPago()">IR A MÉTODOS DE PAGO ➔</button>
         <button class="btn btn-sec" onclick="irASeleccion()">◄ VOLVER A NÚMEROS</button>
@@ -331,8 +340,8 @@
           </div>
           <div class="pago-details">
             <b>Tipo:</b> Cuenta de Ahorros<br>
-            <b>Número:</b> 20001992595[cite: 6]<br>
-            <b>Titular:</b> Sergio Guizado García[cite: 6]
+            <b>Número:</b> 20001992595<br>
+            <b>Titular:</b> Sergio Guizado García
           </div>
         </div>
 
@@ -347,8 +356,8 @@
           </div>
           <div class="pago-details">
             <b>Tipo:</b> Cuenta de Ahorro Transaccional<br>
-            <b>Número:</b> 4998011400[cite: 7]<br>
-            <b>Titular:</b> Sergio Guizado García[cite: 7]
+            <b>Número:</b> 4998011400<br>
+            <b>Titular:</b> Sergio Guizado García
           </div>
         </div>
 
@@ -363,22 +372,34 @@
 
   </div>
 
-  <!-- SCRIPT DE FUNCIONALIDAD CON RULETA GIRATORIA -->
   <script>
     let giros = 0;
     let seleccionados = [];
     let precioPorTicket = 1;
     let anguloActual = 0;
 
+    function renderizarTabla7000() {
+      const grid = document.getElementById('gridNumeros');
+      grid.innerHTML = '';
+      // Creamos los 7000 números de forma limpia
+      let html = '';
+      for (let i = 1; i <= 7000; i++) {
+        html += `<div class="num" id="num-${i}">${i}</div>`;
+      }
+      grid.innerHTML = html;
+    }
+
     function seleccionarPaquete(cantidad) {
-      giros = cantidad;
+      giros = parseInt(cantidad);
       seleccionados = [];
       document.getElementById('girosRestantes').innerText = giros;
       document.getElementById('cantSeleccionados').innerText = '0';
       document.getElementById('totalPagar').innerText = '$0.00 USD';
-      document.getElementById('gridNumeros').innerHTML = '';
       document.getElementById('btnGirar').disabled = false;
+      document.getElementById('boomBox').classList.remove('show');
       
+      renderizarTabla7000();
+
       document.getElementById('screen1').classList.add('hidden');
       document.getElementById('screen2').classList.remove('hidden');
       dibujarRuletaEstetica();
@@ -428,44 +449,53 @@
         return;
       }
 
+      document.getElementById('btnGirar').disabled = true;
+      document.getElementById('boomBox').classList.remove('show');
       giros--;
       document.getElementById('girosRestantes').innerText = giros;
 
-      // Animación de giro real de la ruleta
+      // Giro de ruleta visual
       const canvas = document.getElementById('wheel');
-      anguloActual += 1440 + Math.floor(Math.random() * 360); // Gira varias vueltas completas más un extra aleatorio
+      anguloActual += 1440 + Math.floor(Math.random() * 360);
       canvas.style.transform = `rotate(${anguloActual}deg)`;
 
-      // Generar número aleatorio entre 1 y 7000
+      // Seleccionar número aleatorio que no se repita
       let numRandom = Math.floor(Math.random() * 7000) + 1;
       while (seleccionados.includes(numRandom)) {
         numRandom = Math.floor(Math.random() * 7000) + 1;
       }
-
       seleccionados.push(numRandom);
 
-      // Actualizar grid de números obtenidos
       setTimeout(() => {
-        const grid = document.getElementById('gridNumeros');
-        grid.innerHTML = '';
-        seleccionados.forEach(n => {
-          const div = document.createElement('div');
-          div.className = 'num sel';
-          div.innerText = n;
-          grid.appendChild(div);
-        });
+        // Muestra el número con efecto BOOM sobre la ruleta
+        const boomBox = document.getElementById('boomBox');
+        boomBox.innerText = '#' + numRandom;
+        boomBox.classList.add('show');
+
+        // Lanzar confeti en el centro
+        if (typeof confetti === 'function') {
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { y: 0.45 }
+          });
+        }
+
+        // Marcar en la tabla grande de 7000
+        const elem = document.getElementById('num-' + numRandom);
+        if (elem) {
+          elem.classList.add('sel');
+          elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
 
         document.getElementById('cantSeleccionados').innerText = seleccionados.length;
         const total = (seleccionados.length * precioPorTicket).toFixed(2);
         document.getElementById('totalPagar').innerText = `$${total} USD`;
 
-        if (giros === 0) {
-          document.getElementById('btnGirar').disabled = true;
-          if (typeof confetti === 'function') {
-            confetti();
-          }
+        if (giros > 0) {
+          document.getElementById('btnGirar').disabled = false;
         }
-      }, 1800); // Espera a que termine de girar la ruleta para mostrar los números
+      }, 2000);
     }
 
     function dibujarRuletaEstetica() {
