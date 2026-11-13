@@ -59,9 +59,12 @@
       align-items: center;
       justify-content: center;
     }
-   .prizes-grid {
+    .prize-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+    /* GRILLA DE 2 FILAS Y 2 COLUMNAS (2 arriba y 2 abajo) */
+    .prizes-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Crea exactamente 2 columnas */
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       margin: 15px 0;
     }
@@ -75,7 +78,7 @@
     }
     .mini-prize-img {
       width: 100%;
-      height: 100px; /* Mantén o ajusta este valor si deseas más o menos altura */
+      height: 100px;
       background: #222;
       display: flex;
       align-items: center;
@@ -90,12 +93,12 @@
     .mini-prize-card img { 
       width: 100%; 
       height: 100%; 
-      object-fit: cover; /* Mantiene la proporción de tus imágenes originales */
-      object-position: center; /* Asegura que se centren de manera simétrica */
+      object-fit: cover; 
+      object-position: center; 
       background: #222; 
     }
-    .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; 
-    }
+    .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
+
     /* LOGOTIPO AMPLIADO Y CENTRADO */
     .logo-circle {
       width: 250px; 
@@ -109,7 +112,6 @@
       box-shadow: 0 0 30px rgba(255,215,0,0.6); 
       overflow: hidden;
       border: 3px solid #FFD700; 
-      cursor: pointer;
     }
     .logo-circle img { 
       width: 100%; 
@@ -230,22 +232,23 @@
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <!-- LOGO AMPLIADO -->
-        <div class="logo-circle" onclick="abrirAdminLogin()" title="Panel Admin">
+        <!-- LOGO LIMPIO (SIN ACCESO ADMIN) -->
+        <div class="logo-circle">
           <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
         </div>
 
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
-        <h3 style="margin: 0; color: #bbb; font-weight: 600;">KEEWAY MINNIX 150 🛵</h3>
+        <!-- ACCESO SECRETO EN EL ICONO DE LA MOTO -->
+        <h3 style="margin: 0; color: #bbb; font-weight: 600;">KEEWAY MINNIX 150 <span onclick="abrirAdminLogin()" style="cursor: pointer;" title="Panel Admin">🛵</span></h3>
         
-        <!-- IMAGEN PRINCIPAL BIEN CENTRADA -->
+        <!-- IMAGEN PRINCIPAL DE LA MOTO -->
         <div class="prize-img-container">
           <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Moto en la Calle">
         </div>
 
         <div class="card glow-gold" style="text-align: left; padding: 15px; margin-top: 15px;">
           <h4 style="color: #FFD700; margin: 0 0 10px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
-          <!-- MINI PREMIOS CENTRADOS Y AJUSTADOS -->
+          <!-- MINI PREMIOS ORDENADOS 2 ARRIBA Y 2 ABAJO -->
           <div class="prizes-grid">
             <div class="mini-prize-card">
               <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos"></div>
