@@ -46,20 +46,27 @@
     }
 
     /* CONTENEDOR DE LA IMAGEN PRINCIPAL (MOTO) */
-    .prize-img-container {
+   .prize-img-container {
       width: 100%;
-      height: 320px;
+      height: 340px; /* Altura perfecta para que se vea grande */
       border-radius: 16px;
       overflow: hidden;
       margin: 15px 0;
-      border: 2px solid #C5A028;
+      border: 2px solid #C5A028; /* Borde dorado elegante */
       box-shadow: 0 0 15px rgba(197, 160, 40, 0.3);
-      background: #111;
+      background: #0d0d0d; /* Fondo oscuro idéntico al de tu referencia */
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 10px; /* Margen interno para que la moto respire dentro del marco */
     }
-    .prize-img-container img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+    .prize-img-container img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; /* Muestra la moto completa sin recortar ningún detalle */
+      object-position: center; 
+      display: block;
+    }
 
     /* GRILLA DE 2 FILAS Y 2 COLUMNAS (2 arriba y 2 abajo) */
     .prizes-grid {
