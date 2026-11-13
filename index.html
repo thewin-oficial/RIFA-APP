@@ -48,7 +48,7 @@
     /* CONTENEDOR DE LA IMAGEN PRINCIPAL (MOTO) */
     .prize-img-container {
       width: 100%;
-      height: 240px;
+      height: 260px;
       border-radius: 16px;
       overflow: hidden;
       margin: 15px 0;
@@ -62,49 +62,32 @@
     .prize-img-container img { 
       width: 100%; 
       height: 100%; 
-      object-fit: cover; 
-      object-position: center; /* Asegura que la parte central de la foto de la moto sea la protagonista */
-      display: block;
+      object-fit: contain; /* Muestra la imagen completa centrada sin recortarla */
+      object-position: center;
     }
 
     /* GRILLA DE MINI PREMIOS */
-    .prizes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 15px 0;
-    }
-    .mini-prize-card {
-      background: #151515;
-      border: 1px solid #333;
-      border-radius: 14px;
-      overflow: hidden;
-      text-align: center;
-      padding-bottom: 10px;
-    }
     .mini-prize-img {
       width: 100%;
-      height: 100px;
-      background: #222;
+      height: 120px; /* Aumentado de altura para que respiren mejor */
+      background: #1a1a1a;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      padding: 5px;
     }
     .mini-prize-card img { 
       width: 100%; 
       height: 100%; 
-      object-fit: cover; 
-      object-position: center; /* Centra perfectamente las imágenes secundarias */
-      background: #222; 
-      display: block;
+      object-fit: contain; /* Evita recortes y centra toda la imagen */
+      object-position: center; 
+      background: #1a1a1a; 
     }
-    .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
-
     /* LOGOTIPO AMPLIADO Y CENTRADO */
     .logo-circle {
-      width: 180px; 
-      height: 180px; 
+      width: 250px; 
+      height: 250px; 
       margin: 0 auto 10px auto; 
       border-radius: 50%; 
       background: linear-gradient(135deg, #FFD700, #FF8C00); 
