@@ -59,30 +59,42 @@
       align-items: center;
       justify-content: center;
     }
-    .prize-img-container img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; /* Muestra la imagen completa centrada sin recortarla */
-      object-position: center;
+   .prizes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Crea exactamente 2 columnas */
+      gap: 12px;
+      margin: 15px 0;
     }
-
-    /* GRILLA DE MINI PREMIOS */
+    .mini-prize-card {
+      background: #151515;
+      border: 1px solid #333;
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: center;
+      padding-bottom: 10px;
+    }
     .mini-prize-img {
       width: 100%;
-      height: 120px; /* Aumentado de altura para que respiren mejor */
-      background: #1a1a1a;
+      height: 100px; /* Mantén o ajusta este valor si deseas más o menos altura */
+      background: #222;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      font-size: 11px;
+      color: #FFD700;
+      font-weight: 600;
       padding: 5px;
+      text-align: center;
+      overflow: hidden;
     }
     .mini-prize-card img { 
       width: 100%; 
       height: 100%; 
-      object-fit: contain; /* Evita recortes y centra toda la imagen */
-      object-position: center; 
-      background: #1a1a1a; 
+      object-fit: cover; /* Mantiene la proporción de tus imágenes originales */
+      object-position: center; /* Asegura que se centren de manera simétrica */
+      background: #222; 
+    }
+    .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; 
     }
     /* LOGOTIPO AMPLIADO Y CENTRADO */
     .logo-circle {
