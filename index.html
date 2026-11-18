@@ -419,10 +419,33 @@
           <div class="pago-details"><b>Titular:</b> Sergio Guizado García</div>
         </div>
 
-        <!-- PayPal -->
+        <!-- Banco Guayaquil -->
+        <div class="pago-card highlight">
+          <div class="pago-header">
+            <div style="background:#E5007D; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px;">BG</div>
+            <div>
+              <h4 style="margin: 0; color: #FFD700; font-size: 15px;">Banco Guayaquil</h4>
+              <span style="font-size: 11px; color: #888;">Cuenta de Ahorros: 0039249647</span>
+            </div>
+          </div>
+          <div class="pago-details"><b>Titular:</b> Sergio Guizado García</div>
+        </div>
+
+        <!-- PayPal QR y Enlace Directo -->
         <div class="pago-card highlight" style="text-align: center;">
-          <h4 style="margin: 0 0 5px; color: #FFD700;">PayPal Seguro</h4>
-          <a id="paypalBtn" href="#" target="_blank" style="background: #0070BA; color: #fff; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 13px;">Pagar con PayPal ➔</a>
+          <div class="pago-header" style="justify-content: center;">
+            <div style="background:#0070BA; width:35px; height:35px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:14px;">PP</div>
+            <div style="text-align: left;">
+              <h4 style="margin: 0; color: #FFD700; font-size: 15px;">PayPal - Sergio Guizado</h4>
+              <span style="font-size: 11px; color: #888;">Escanea el QR o toca el botón</span>
+            </div>
+          </div>
+          <div style="background: #fff; padding: 12px; border-radius: 12px; display: inline-block; margin: 8px 0;">
+            <p style="margin: 0 0 6px; color: #003087; font-weight: 800; font-size: 13px;">Sergio Guizado</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=003087&data=https://www.paypal.com/qrcodes/p2pqrc/ACGYQ3R92DPGY" alt="QR PayPal Sergio Guizado" style="width: 150px; height: 150px; display: block; margin: auto;">
+            <p style="margin: 6px 0 0; color: #333; font-size: 10px; font-weight: 600;">Escanear para pagar a Sergio Guizado</p>
+          </div><br>
+          <a id="paypalBtn" href="https://www.paypal.com/qrcodes/p2pqrc/ACGYQ3R92DPGY" target="_blank" style="background: #0070BA; color: #fff; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 13px; margin-top: 6px;">Pagar con PayPal ➔</a>
         </div>
 
         <!-- PASO 1 OBLIGATORIO: SUBIR IMAGEN DEL COMPROBANTE -->
@@ -649,8 +672,7 @@
       const total = (seleccionados.length * precioPorTicket).toFixed(2);
       document.getElementById('montoFinal').innerText = `$${total} USD`;
 
-      const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=TU_CORREO_PAYPAL@dominio.com&item_name=Rifa+The+Win+Tickets&amount=${total}&currency_code=USD`;
-      document.getElementById('paypalBtn').href = paypalUrl;
+      document.getElementById('paypalBtn').href = "https://www.paypal.com/qrcodes/p2pqrc/ACGYQ3R92DPGY";
 
       const numeroWhatsApp = "593991234567";
       const mensajeWA = encodeURIComponent(`Hola, soy ${nombre} ${apellidos}, acabo de seleccionar los boletos: ${seleccionados.join(', ')} por un monto de $${total} USD. Adjunto mi comprobante de pago.`);
