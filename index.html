@@ -119,11 +119,19 @@
     }
     .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
 
-    /* LOGOTIPO AMPLIADO Y CENTRADO - TAMAÑO ORIGINAL 250px x 250px */
-    .logo-circle {
-      width: 250px;
-      height: 250px;
+    /* CABECERA CON LOGOTIPO Y MASCOTA DEL MISMO TAMAÑO LADO A LADO */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       margin: 0 auto 10px auto;
+      width: 100%;
+    }
+    .logo-circle {
+      flex: 1;
+      max-width: 220px;
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
       background: linear-gradient(135deg, #FFD700, #FF8C00);
       display: flex;
@@ -139,6 +147,24 @@
       object-fit: cover;
       object-position: center;
       display: block;
+    }
+    .mascot-box {
+      flex: 1;
+      max-width: 220px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+    .mascot-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.45));
     }
 
     .bar { background: #1a1a1a; height: 26px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid #333; }
@@ -258,9 +284,14 @@
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <!-- LOGO LIMPIO (250px x 250px) -->
-        <div class="logo-circle">
-          <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
+        <!-- LOGO Y MASCOTA DEL MISMO TAMAÑO LADO A LADO -->
+        <div class="brand-header">
+          <div class="logo-circle">
+            <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
+          </div>
+          <div class="mascot-box">
+            <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/mascota.jpeg" alt="Mascota The Win">
+          </div>
         </div>
 
         <h1 style="background: linear-gradient(90deg, #FFD700, #FFF, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 12px 0 0; font-weight: 900;">GRAN SORTEO</h1>
