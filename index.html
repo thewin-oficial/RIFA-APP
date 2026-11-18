@@ -1,4 +1,35 @@
-width: 100%;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>THE WIN - RIFA OFICIAL</title>
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script type="text/javascript">
+    (function(){
+      try {
+        if (window.emailjs) {
+          emailjs.init("TU_PUBLIC_KEY");
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap');
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
       max-width: 100%;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -88,13 +119,13 @@ width: 100%;
     }
     .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
 
-    /* CABECERA CON LOGOTIPO Y MASCOTA RECOSTADA AL LOGO */
+    /* CABECERA CON LOGOTIPO Y MASCOTA RECOSTADA AL LOGO SIN CUADRO */
     .brand-header {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 8px auto;
+      margin: 0 auto 6px auto;
       width: 100%;
       position: relative;
     }
@@ -121,16 +152,17 @@ width: 100%;
       display: block;
     }
     .mascot-box {
-      width: 165px;
-      height: 235px;
+      width: 170px;
+      height: 245px;
       flex-shrink: 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-left: -44px;
+      margin-left: -54px;
       position: relative;
       z-index: 5;
       pointer-events: none;
@@ -142,6 +174,8 @@ width: 100%;
       object-position: center;
       display: block;
       mix-blend-mode: lighten;
+      background: transparent !important;
+      border: none !important;
     }
     @media (max-width: 460px) {
       .logo-circle {
@@ -149,9 +183,9 @@ width: 100%;
         height: 155px;
       }
       .mascot-box {
-        width: 135px;
-        height: 192px;
-        margin-left: -36px;
+        width: 140px;
+        height: 200px;
+        margin-left: -45px;
       }
     }
 
@@ -272,7 +306,7 @@ width: 100%;
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <!-- LOGO Y MASCOTA RECOSTADA AL LOGO -->
+        <!-- LOGO Y MASCOTA RECOSTADA AL LOGO SIN CUADRO -->
         <div class="brand-header">
           <div class="logo-circle">
             <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
@@ -889,50 +923,3 @@ width: 100%;
           });
         } catch (e) {}
       }
-
-      document.getElementById('txtOrdenCompra').innerText = ordenId;
-      document.getElementById('txtBoletosFinales').innerText = seleccionados.map(n => `#${String(n).padStart(4, '0')}`).join(', ');
-
-      btn.innerText = '✅ FINALIZAR Y REGISTRAR COMPRA';
-      document.getElementById('screen4').classList.add('hidden');
-      document.getElementById('screenGracias').classList.remove('hidden');
-      window.scrollTo(0, 0);
-    }
-
-    function abrirAdminLogin() {
-      document.getElementById('screen1').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.remove('hidden');
-      document.getElementById('adminLoginBox').classList.remove('hidden');
-      document.getElementById('adminDashboard').classList.add('hidden');
-      window.scrollTo(0, 0);
-    }
-
-    async function verificarAdmin() {
-      const user = document.getElementById('adminUser').value.trim();
-      const pass = document.getElementById('adminPass').value.trim();
-
-      if (user === 'admin' && pass === 'thewin2026') {
-        await cargarDatosNube();
-        document.getElementById('adminLoginBox').classList.add('hidden');
-        document.getElementById('adminDashboard').classList.remove('hidden');
-        document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
-
-        const tbody = document.getElementById('adminTablaCompradores');
-        tbody.innerHTML = compradoresGlobales.map(c => `
-          <tr>
-            <td><b>${c.orden || '-'}</b></td>
-            <td>${c.nombre || ''}</td>
-            <td>CI: ${c.cedula || ''}<br>Tel: ${c.telefono || ''}<br>${c.provincia || ''}</td>
-            <td style="color:#FFD700; font-weight:bold;">${(c.boletos || []).join(', ')}</td>
-            <td>${c.comprobante ? `<img src="${c.comprobante}" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">` : 'Sin foto'}</td>
-          </tr>
-        `).join('');
-      } else {
-        alert('Usuario o contraseña incorrectos.');
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', cargarDatosNube);
-  </script>
-</body>
-</html>
