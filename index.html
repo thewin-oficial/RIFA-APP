@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>THE WIN - RIFA OFICIAL</title>
-
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script type="text/javascript">
-    (function(){
-      try {
-        if (window.emailjs) {
-          emailjs.init("TU_PUBLIC_KEY");
-        }
-      } catch (e) {}
-    })();
-  </script>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap');
-
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
+width: 100%;
       max-width: 100%;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -119,19 +88,19 @@
     }
     .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
 
-    /* CABECERA CON LOGOTIPO Y MASCOTA DEL MISMO TAMAÑO LADO A LADO */
+    /* CABECERA CON LOGOTIPO Y MASCOTA RECOSTADA AL LOGO */
     .brand-header {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin: 0 auto 12px auto;
+      margin: 0 auto 8px auto;
       width: 100%;
+      position: relative;
     }
     .logo-circle {
-      width: 205px;
-      height: 205px;
+      width: 190px;
+      height: 190px;
       flex-shrink: 0;
       border-radius: 50%;
       background: linear-gradient(135deg, #FFD700, #FF8C00);
@@ -141,6 +110,8 @@
       box-shadow: 0 0 30px rgba(255,215,0,0.6);
       overflow: hidden;
       border: 3px solid #FFD700;
+      position: relative;
+      z-index: 2;
     }
     .logo-circle img {
       width: 100%;
@@ -150,17 +121,19 @@
       display: block;
     }
     .mascot-box {
-      width: 205px;
-      height: 205px;
+      width: 165px;
+      height: 235px;
       flex-shrink: 0;
-      border-radius: 20px;
-      background: #000;
+      background: transparent;
+      border: none;
+      box-shadow: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      border: 2px solid rgba(255, 215, 0, 0.35);
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+      margin-left: -44px;
+      position: relative;
+      z-index: 5;
+      pointer-events: none;
     }
     .mascot-box img {
       width: 100%;
@@ -168,11 +141,17 @@
       object-fit: contain;
       object-position: center;
       display: block;
+      mix-blend-mode: lighten;
     }
     @media (max-width: 460px) {
-      .logo-circle, .mascot-box {
-        width: 160px;
-        height: 160px;
+      .logo-circle {
+        width: 155px;
+        height: 155px;
+      }
+      .mascot-box {
+        width: 135px;
+        height: 192px;
+        margin-left: -36px;
       }
     }
 
@@ -293,7 +272,7 @@
     <!-- PANTALLA 1: INICIO Y PAQUETES -->
     <div id="screen1">
       <div style="text-align: center; padding: 10px 0 20px;">
-        <!-- LOGO Y MASCOTA DEL MISMO TAMAÑO LADO A LADO -->
+        <!-- LOGO Y MASCOTA RECOSTADA AL LOGO -->
         <div class="brand-header">
           <div class="logo-circle">
             <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/logo.jpeg" alt="Logo The Win" onerror="this.parentElement.innerHTML='<b>THE WIN</b>'">
