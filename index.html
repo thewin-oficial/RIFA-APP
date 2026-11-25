@@ -81,43 +81,117 @@
       display: block;
     }
 
-    /* GRILLA DE 2 FILAS Y 2 COLUMNAS */
-    .prizes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 15px 0;
-    }
-    .mini-prize-card {
-      background: #151515;
-      border: 1px solid #333;
-      border-radius: 14px;
-      overflow: hidden;
-      text-align: center;
-      padding-bottom: 10px;
-    }
-    .mini-prize-img {
+    /* PRESENTACIÓN DINÁMICA DE PREMIOS (SLIDER TIPO SEMI-VIDEO) */
+    .prizes-slider {
+      position: relative;
       width: 100%;
-      height: 100px;
-      background: #222;
+      height: 220px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      background: #0d0d0d;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .prize-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-in-out, visibility 0.8s;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
-      color: #FFD700;
-      font-weight: 600;
-      padding: 5px;
-      text-align: center;
-      overflow: hidden;
     }
-    .mini-prize-card img {
+
+    .prize-slide.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 2;
+    }
+
+    .prize-slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center;
-      background: #222;
+      transform: scale(1);
+      transition: transform 4.5s ease-out;
     }
-    .mini-prize-title { font-size: 12px; font-weight: 700; color: #FFD700; margin: 8px 5px 0; }
+
+    .prize-slide.active img {
+      transform: scale(1.1);
+    }
+
+    .prize-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 15%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+      padding: 25px 14px 12px;
+      text-align: center;
+      z-index: 3;
+    }
+
+    .prize-caption-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFD700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .prize-caption-sub {
+      font-size: 11px;
+      color: #ddd;
+      margin-top: 2px;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.55);
+      color: #FFD700;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .slider-arrow:hover { background: rgba(255, 215, 0, 0.25); }
+    .slider-arrow.prev { left: 8px; }
+    .slider-arrow.next { right: 8px; }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .slider-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #444;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .slider-dot.active {
+      width: 22px;
+      border-radius: 10px;
+      background: #FFD700;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+    }
 
     /* CABECERA CON LOGOTIPO Y MASCOTA DEL MISMO TAMAÑO LADO A LADO */
     .brand-header {
@@ -313,25 +387,44 @@
         </div>
 
         <div class="card glow-gold" style="text-align: left; padding: 15px; margin-top: 15px;">
-          <h4 style="color: #FFD700; margin: 0 0 10px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
-          <div class="prizes-grid">
-            <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos"></div>
-              <div class="mini-prize-title">Teléfonos y Accesorios</div>
+          <h4 style="color: #FFD700; margin: 0 0 12px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
+          <div class="prizes-slider" id="prizesSlider">
+            <div class="prize-slide active">
+              <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos">
+              <div class="prize-caption">
+                <div class="prize-caption-title">📱 Teléfonos y Accesorios</div>
+                <div class="prize-caption-sub">Premios instantáneos para ganadores</div>
+              </div>
             </div>
-            <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Exhibición"></div>
-              <div class="mini-prize-title">Moto en Exhibición</div>
+
+            <div class="prize-slide">
+              <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Exhibición">
+              <div class="prize-caption">
+                <div class="prize-caption-title">🏍️ Moto en Exhibición</div>
+                <div class="prize-caption-sub">Keeway Minnix 150 totalmente nueva</div>
+              </div>
             </div>
-            <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Ángulo Moto"></div>
-              <div class="mini-prize-title">Segundo Ángulo Moto</div>
+
+            <div class="prize-slide">
+              <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Ángulo Moto">
+              <div class="prize-caption">
+                <div class="prize-caption-title">🔥 Segundo Ángulo Moto</div>
+                <div class="prize-caption-sub">Lista para rodar con papeles al día</div>
+              </div>
             </div>
-            <div class="mini-prize-card">
-              <div class="mini-prize-img"><img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Kit Sorpresa"></div>
-              <div class="mini-prize-title">Kit Sorpresa</div>
+
+            <div class="prize-slide">
+              <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Kit Sorpresa">
+              <div class="prize-caption">
+                <div class="prize-caption-title">🎁 Kit Sorpresa</div>
+                <div class="prize-caption-sub">Más oportunidades de ganar con tu ticket</div>
+              </div>
             </div>
+
+            <button type="button" class="slider-arrow prev" onclick="cambiarSlidePremio(-1)">❮</button>
+            <button type="button" class="slider-arrow next" onclick="cambiarSlidePremio(1)">❯</button>
           </div>
+          <div class="slider-dots" id="sliderDots"></div>
         </div>
       </div>
 
@@ -571,6 +664,55 @@
     const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
     const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+    let slideActual = 0;
+    let intervaloPremios = null;
+
+    function iniciarSliderPremios() {
+      const slides = document.querySelectorAll('#prizesSlider .prize-slide');
+      const dotsContainer = document.getElementById('sliderDots');
+      if (!slides.length || !dotsContainer) return;
+
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = idx === 0 ? 'slider-dot active' : 'slider-dot';
+        dot.onclick = () => irASlidePremio(idx);
+        dotsContainer.appendChild(dot);
+      });
+
+      reiniciarAutoPlayPremios();
+    }
+
+    function mostrarSlidePremio(indice) {
+      const slides = document.querySelectorAll('#prizesSlider .prize-slide');
+      const dots = document.querySelectorAll('#sliderDots .slider-dot');
+      if (!slides.length) return;
+
+      slideActual = (indice + slides.length) % slides.length;
+
+      slides.forEach((s, i) => s.classList.toggle('active', i === slideActual));
+      dots.forEach((d, i) => d.classList.toggle('active', i === slideActual));
+    }
+
+    function cambiarSlidePremio(direccion) {
+      mostrarSlidePremio(slideActual + direccion);
+      reiniciarAutoPlayPremios();
+    }
+
+    function irASlidePremio(indice) {
+      mostrarSlidePremio(indice);
+      reiniciarAutoPlayPremios();
+    }
+
+    function reiniciarAutoPlayPremios() {
+      clearInterval(intervaloPremios);
+      intervaloPremios = setInterval(() => {
+        mostrarSlidePremio(slideActual + 1);
+      }, 3800);
+    }
+
+    document.addEventListener('DOMContentLoaded', iniciarSliderPremios);
+
     let intentoMascota = 0;
     function probarOtraExtensionMascota(img) {
       const alternativas = [
@@ -669,7 +811,7 @@
     function seleccionarPaquete(cantidad) {
       giros = parseInt(cantidad);
       seleccionados = [];
-      document.getElementById('girosRestantes').innerText = giros;
+      document.getElementBy('girosRestantes').innerText = giros;
       document.getElementById('cantSeleccionados').innerText = '0';
       document.getElementById('totalPagar').innerText = '$0.00 USD';
       document.getElementById('btnGirar').disabled = false;
