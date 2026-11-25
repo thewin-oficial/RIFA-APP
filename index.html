@@ -81,81 +81,90 @@
       display: block;
     }
 
-    /* PRESENTACIÓN DINÁMICA CONTINUA TIPO VIDEO */
-    .prizes-marquee {
+    /* VISOR TIPO VIDEO / REEL PARA PREMIOS */
+    .video-reel-box {
       position: relative;
       width: 100%;
-      overflow: hidden;
+      height: 340px;
       border-radius: 16px;
-      padding: 6px 0;
-      mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+      overflow: hidden;
+      border: 2px solid #C5A028;
+      background: #050505;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
     }
 
-    .prizes-track {
+    /* Barra de progreso superior tipo historia/video */
+    .reel-progress-bar {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      right: 10px;
       display: flex;
-      gap: 14px;
-      width: max-content;
-      animation: deslizarPremios 24s linear infinite;
+      gap: 4px;
+      z-index: 10;
+    }
+    .reel-seg {
+      flex: 1;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .reel-seg-fill {
+      height: 100%;
+      width: 0%;
+      background: #FFD700;
+      box-shadow: 0 0 6px #FFD700;
     }
 
-    .prizes-marquee:hover .prizes-track,
-    .prizes-marquee:active .prizes-track {
-      animation-play-state: paused;
+    /* Fondo desenfocado para llenar bordes de fotos verticales */
+    .reel-bg-blur {
+      position: absolute;
+      inset: -15px;
+      width: calc(100% + 30px);
+      height: calc(100% + 30px);
+      object-fit: cover;
+      filter: blur(18px) brightness(0.35);
+      z-index: 1;
+      transition: opacity 0.6s ease;
     }
 
-    @keyframes deslizarPremios {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .prize-slide-card {
-      width: 260px;
-      height: 315px;
-      flex-shrink: 0;
+    /* Imagen principal nítida con zoom suave tipo video */
+    .reel-main-img {
       position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1.5px solid rgba(255, 215, 0, 0.5);
-      background: radial-gradient(circle at center, #1d1a10 0%, #0a0a0a 100%);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 10px 64px;
-    }
-
-    .prize-slide-card img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       object-position: center;
+      padding: 22px 12px 68px;
+      z-index: 2;
       display: block;
-      border-radius: 10px;
+      transition: transform 3.5s linear, opacity 0.4s ease;
     }
 
-    .prize-caption {
+    .reel-caption {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.96) 45%, rgba(0, 0, 0, 0.75) 80%, transparent 100%);
-      padding: 18px 10px 10px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.96) 40%, rgba(0, 0, 0, 0.7) 80%, transparent 100%);
+      padding: 22px 14px 12px;
       text-align: center;
-      z-index: 3;
+      z-index: 5;
     }
 
-    .prize-caption-title {
-      font-size: 13px;
+    .reel-title {
+      font-size: 14px;
       font-weight: 800;
       color: #FFD700;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
     }
 
-    .prize-caption-sub {
-      font-size: 10.5px;
-      color: #ddd;
+    .reel-sub {
+      font-size: 11px;
+      color: #e0e0e0;
       margin-top: 2px;
     }
 
@@ -353,111 +362,18 @@
           <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Moto en la Calle">
         </div>
 
-        <!-- SECCIÓN DINÁMICA DE PREMIOS EN MOVIMIENTO CONTINUO -->
-        <div class="card glow-gold" style="text-align: left; padding: 15px 10px; margin-top: 15px;">
+        <!-- VISOR TIPO VIDEO AUTOMÁTICO DE PREMIOS -->
+        <div class="card glow-gold" style="text-align: left; padding: 15px; margin-top: 15px;">
           <h4 style="color: #FFD700; margin: 0 0 12px; text-align: center; font-weight: 800;">🎁 CONOCE TODOS LOS PREMIOS</h4>
-          <div class="prizes-marquee">
-            <div class="prizes-track">
-              <!-- SERIE 1 -->
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">📱 Teléfonos y Accesorios</div>
-                  <div class="prize-caption-sub">Premios instantáneos para ganadores</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Exhibición">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🏍️ Moto en Exhibición</div>
-                  <div class="prize-caption-sub">Keeway Minnix 150 totalmente nueva</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Ángulo Moto">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🔥 Segundo Ángulo Moto</div>
-                  <div class="prize-caption-sub">Lista para rodar con papeles al día</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/ACCESORIOS.jpeg" alt="Accesorios">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🎒 Accesorios</div>
-                  <div class="prize-caption-sub">Equipamiento incluido con tu premio</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/MOTO.jpeg" alt="Moto Keeway">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🏁 Keeway Minnix 150</div>
-                  <div class="prize-caption-sub">Potencia y estilo lista para estrenar</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Imagen%20de%20moto.jpeg" alt="Vista de la Moto">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">✨ Detalles de la Moto</div>
-                  <div class="prize-caption-sub">Tu próximo vehículo por solo $1 el ticket</div>
-                </div>
-              </div>
-
-              <!-- SERIE 2 (DUPLICADA PARA BUCLE INFINITO SIN CORTES) -->
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Teléfonos">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">📱 Teléfonos y Accesorios</div>
-                  <div class="prize-caption-sub">Premios instantáneos para ganadores</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg" alt="Exhibición">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🏍️ Moto en Exhibición</div>
-                  <div class="prize-caption-sub">Keeway Minnix 150 totalmente nueva</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg" alt="Ángulo Moto">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🔥 Segundo Ángulo Moto</div>
-                  <div class="prize-caption-sub">Lista para rodar con papeles al día</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/ACCESORIOS.jpeg" alt="Accesorios">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🎒 Accesorios</div>
-                  <div class="prize-caption-sub">Equipamiento incluido con tu premio</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/MOTO.jpeg" alt="Moto Keeway">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">🏁 Keeway Minnix 150</div>
-                  <div class="prize-caption-sub">Potencia y estilo lista para estrenar</div>
-                </div>
-              </div>
-
-              <div class="prize-slide-card">
-                <img src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Imagen%20de%20moto.jpeg" alt="Vista de la Moto">
-                <div class="prize-caption">
-                  <div class="prize-caption-title">✨ Detalles de la Moto</div>
-                  <div class="prize-caption-sub">Tu próximo vehículo por solo $1 el ticket</div>
-                </div>
-              </div>
+          <div class="video-reel-box" id="videoReelBox" onclick="siguienteFotoReel()">
+            <div class="reel-progress-bar" id="reelProgressBar"></div>
+            <img id="reelBgBlur" class="reel-bg-blur" src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="">
+            <img id="reelMainImg" class="reel-main-img" src="https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg" alt="Premio">
+            <div class="reel-caption">
+              <div id="reelTitle" class="reel-title">📱 Teléfonos y Accesorios</div>
+              <div id="reelSub" class="reel-sub">Premios instantáneos para ganadores</div>
             </div>
           </div>
-          <p style="text-align: center; font-size: 11px; color: #888; margin: 8px 0 0;">Mantén presionado para pausar</p>
         </div>
       </div>
 
@@ -701,6 +617,102 @@
 
     const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+    // --- MOTOR DE VIDEO / REEL AUTOMÁTICO DE PREMIOS ---
+    const listaPremiosVideo = [
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/IMAGEN%20CELULAR.jpeg",
+        titulo: "📱 Teléfonos y Accesorios",
+        sub: "Premios instantáneos para ganadores"
+      },
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Moto%20imagen%20trasera.jpeg",
+        titulo: "🏍️ Moto en Exhibición",
+        sub: "Keeway Minnix 150 totalmente nueva"
+      },
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/moto%20imagen%20principal.jpeg",
+        titulo: "🔥 Segundo Ángulo Moto",
+        sub: "Lista para rodar con papeles al día"
+      },
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/ACCESORIOS.jpeg",
+        titulo: "🎒 Accesorios",
+        sub: "Equipamiento incluido con tu premio"
+      },
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/MOTO.jpeg",
+        titulo: "🏁 Keeway Minnix 150",
+        sub: "Potencia y estilo lista para estrenar"
+      },
+      {
+        img: "https://raw.githubusercontent.com/thewin-oficial/IMAGENES-/main/Imagen%20de%20moto.jpeg",
+        titulo: "✨ Detalles de la Moto",
+        sub: "Tu próximo vehículo por solo $1 el ticket"
+      }
+    ];
+
+    let indiceReel = 0;
+    let progresoReel = 0;
+    const DURACION_FOTO_MS = 3500; // 3.5 segundos por foto
+    const TICK_MS = 50;
+
+    function iniciarMotorReel() {
+      const bar = document.getElementById('reelProgressBar');
+      if (!bar) return;
+
+      bar.innerHTML = listaPremiosVideo.map((_, i) =>
+        `<div class="reel-seg"><div class="reel-seg-fill" id="reel-fill-${i}"></div></div>`
+      ).join('');
+
+      cargarFotoReel(0);
+
+      setInterval(() => {
+        progresoReel += TICK_MS;
+        const porcentaje = Math.min((progresoReel / DURACION_FOTO_MS) * 100, 100);
+        const fillActual = document.getElementById('reel-fill-' + indiceReel);
+        if (fillActual) fillActual.style.width = porcentaje + '%';
+
+        // Efecto zoom continuo tipo video (escala de 1.00 a 1.08)
+        const mainImg = document.getElementById('reelMainImg');
+        if (mainImg) {
+          const escala = 1 + (porcentaje / 100) * 0.08;
+          mainImg.style.transform = `scale(${escala})`;
+        }
+
+        if (progresoReel >= DURACION_FOTO_MS) {
+          siguienteFotoReel();
+        }
+      }, TICK_MS);
+    }
+
+    function cargarFotoReel(idx) {
+      indiceReel = (idx + listaPremiosVideo.length) % listaPremiosVideo.length;
+      progresoReel = 0;
+
+      const item = listaPremiosVideo[indiceReel];
+      const mainImg = document.getElementById('reelMainImg');
+      const bgBlur = document.getElementById('reelBgBlur');
+      const title = document.getElementById('reelTitle');
+      const sub = document.getElementById('reelSub');
+
+      if (mainImg) {
+        mainImg.style.transform = 'scale(1)';
+        mainImg.src = item.img;
+      }
+      if (bgBlur) bgBlur.src = item.img;
+      if (title) title.innerText = item.titulo;
+      if (sub) sub.innerText = item.sub;
+
+      listaPremiosVideo.forEach((_, i) => {
+        const f = document.getElementById('reel-fill-' + i);
+        if (f) f.style.width = i < indiceReel ? '100%' : '0%';
+      });
+    }
+
+    function siguienteFotoReel() {
+      cargarFotoReel(indiceReel + 1);
+    }
+
     // --- MASCOTA FALLBACK ---
     let intentoMascota = 0;
     function probarOtraExtensionMascota(img) {
@@ -772,3 +784,325 @@
         try {
           await supabaseClient.from('rifa_datos').update({
             vendidos: vendidosGlobales,
+            compradores: compradoresGlobales
+          }).eq('id', 1);
+        } catch (e) {}
+      }
+      renderizarTabla7000();
+    }
+
+    function renderizarTabla7000() {
+      const vendidosSet = new Set(vendidosGlobales);
+      const selSet = new Set(seleccionados);
+      const grid = document.getElementById('gridNumeros');
+      if (grid) {
+        const partes = new Array(7000);
+        for (let i = 1; i <= 7000; i++) {
+          let clase = 'num';
+          if (selSet.has(i)) clase = 'num mio';
+          else if (vendidosSet.has(i)) clase = 'num sel';
+          partes[i - 1] = `<div class="${clase}" id="num-${i}">${i}</div>`;
+        }
+        grid.innerHTML = partes.join('');
+      }
+      const elemVendidos = document.getElementById('vendidosGlobal');
+      if (elemVendidos) elemVendidos.innerText = vendidosGlobales.length;
+      let porc = ((vendidosGlobales.length / 7000) * 100).toFixed(1);
+      const elemFill = document.getElementById('fillGlobal');
+      if (elemFill) elemFill.style.width = porc + '%';
+      const elemPorcTxt = document.getElementById('porcGlobalTxt');
+      if (elemPorcTxt) elemPorcTxt.innerText = porc + '% VENDIDO';
+    }
+
+    // --- NAVEGACIÓN ENTRE PANTALLAS ---
+    function mostrarPantalla(id) {
+      ['screen1', 'screen2', 'screen3', 'screen4', 'screenGracias', 'screenAdmin'].forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+      });
+      const activa = document.getElementById(id);
+      if (activa) activa.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function irAPrincipal() {
+      mostrarPantalla('screen1');
+      cargarDatosNube();
+    }
+
+    function seleccionarPaquete(cantidad) {
+      giros = parseInt(cantidad);
+      seleccionados = [];
+      girando = false;
+
+      document.getElementById('girosRestantes').innerText = giros;
+      document.getElementById('cantSeleccionados').innerText = '0';
+      document.getElementById('totalPagar').innerText = '$0.00 USD';
+      document.getElementById('btnGirar').disabled = false;
+      document.getElementById('btnGirar').innerText = '🎰 ¡GIRAR RULETA!';
+      document.getElementById('btnContinuar').disabled = true;
+
+      const boom = document.getElementById('boomBox');
+      if (boom) boom.classList.remove('show');
+
+      renderizarTabla7000();
+      dibujarRuleta();
+      mostrarPantalla('screen2');
+    }
+
+    function irASeleccion() {
+      mostrarPantalla('screen2');
+    }
+
+    function irAFormulario() {
+      if (seleccionados.length === 0) {
+        alert('Debes girar la ruleta para obtener tus números primero.');
+        return;
+      }
+      mostrarPantalla('screen3');
+    }
+
+    function irAMetodosPago() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellidos = document.getElementById('apellidos').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const provincia = document.getElementById('provincia').value;
+      const telefono = document.getElementById('telefono').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (!nombre || !apellidos || !cedula || !provincia || !telefono || !email) {
+        alert('Por favor completa todos los campos obligatorios (*).');
+        return;
+      }
+
+      const total = (seleccionados.length * precioPorTicket).toFixed(2);
+      document.getElementById('montoFinal').innerText = '$' + total + ' USD';
+
+      paso1Subido = false;
+      paso2WhatsApp = false;
+      fotoComprobanteBase64 = null;
+      document.getElementById('inputComprobante').value = '';
+      document.getElementById('previewComprobante').style.display = 'none';
+      document.getElementById('fileTxtLabel').innerText = '📁 Haz clic aquí para adjuntar imagen';
+      document.getElementById('btnFinalizar').disabled = true;
+      document.getElementById('msgValidacionPasos').style.display = 'block';
+
+      const boletosTxt = seleccionados.map(n => '#' + String(n).padStart(4, '0')).join(', ');
+      const msg = `Hola THE WIN! 🛵 Quiero confirmar mi compra:\n• *Nombre:* ${nombre} ${apellidos}\n• *Cédula:* ${cedula}\n• *Provincia:* ${provincia}\n• *Boletos:* ${boletosTxt}\n• *Total pagado:* $${total} USD\nAdjunto mi comprobante de pago.`;
+      document.getElementById('whatsappBtn').href = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
+
+      mostrarPantalla('screen4');
+    }
+
+    // --- RULETA CANVAS Y LÓGICA DE GIRO ---
+    function dibujarRuleta() {
+      const canvas = document.getElementById('wheel');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const colores = ['#FFD700', '#1a1a1a', '#FF5722', '#222222', '#00E676', '#111111', '#FFA500', '#2b2b2b'];
+      const numSectores = colores.length;
+      const anguloSector = (2 * Math.PI) / numSectores;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radio = cx - 4;
+
+      for (let i = 0; i < numSectores; i++) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radio, i * anguloSector, (i + 1) * anguloSector);
+        ctx.fillStyle = colores[i];
+        ctx.fill();
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function obtenerNumeroDisponible() {
+      const ocupados = new Set([...vendidosGlobales, ...seleccionados]);
+      if (ocupados.size >= 7000) return null;
+      let candidato;
+      let intentos = 0;
+      do {
+        candidato = Math.floor(Math.random() * 7000) + 1;
+        intentos++;
+      } while (ocupados.has(candidato) && intentos < 15000);
+
+      if (ocupados.has(candidato)) {
+        for (let i = 1; i <= 7000; i++) {
+          if (!ocupados.has(i)) return i;
+        }
+        return null;
+      }
+      return candidato;
+    }
+
+    function girarRuleta() {
+      if (girando || giros <= 0) return;
+
+      const numeroGanado = obtenerNumeroDisponible();
+      if (!numeroGanado) {
+        alert('¡Todos los boletos del sorteo se han agotado!');
+        return;
+      }
+
+      girando = true;
+      const btnGirar = document.getElementById('btnGirar');
+      const boomBox = document.getElementById('boomBox');
+      btnGirar.disabled = true;
+      boomBox.classList.remove('show');
+
+      anguloActual += 1440 + Math.floor(Math.random() * 360);
+      const wheel = document.getElementById('wheel');
+      wheel.style.transform = `rotate(${anguloActual}deg)`;
+
+      setTimeout(() => {
+        seleccionados.push(numeroGanado);
+        giros--;
+
+        boomBox.innerText = '#' + String(numeroGanado).padStart(4, '0');
+        boomBox.classList.add('show');
+
+        if (window.confetti) {
+          confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
+        }
+
+        const celda = document.getElementById('num-' + numeroGanado);
+        if (celda) {
+          celda.className = 'num mio';
+          celda.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.getElementById('girosRestantes').innerText = giros;
+        document.getElementById('cantSeleccionados').innerText = seleccionados.length;
+        document.getElementById('totalPagar').innerText = '$' + (seleccionados.length * precioPorTicket).toFixed(2) + ' USD';
+
+        girando = false;
+
+        if (giros > 0) {
+          btnGirar.disabled = false;
+        } else {
+          btnGirar.innerText = '✅ GIROS COMPLETADOS';
+          document.getElementById('btnContinuar').disabled = false;
+        }
+      }, 2050);
+    }
+
+    // --- VALIDACIÓN DE COMPROBANTE Y WHATSAPP ---
+    function procesarFotoComprobante(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          fotoComprobanteBase64 = e.target.result;
+          const preview = document.getElementById('previewComprobante');
+          preview.src = fotoComprobanteBase64;
+          preview.style.display = 'inline-block';
+          document.getElementById('fileTxtLabel').innerText = '✅ Comprobante cargado correctamente';
+          paso1Subido = true;
+          verificarPasosPago();
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function marcarWhatsAppEnviado() {
+      paso2WhatsApp = true;
+      verificarPasosPago();
+    }
+
+    function verificarPasosPago() {
+      if (paso1Subido && paso2WhatsApp) {
+        document.getElementById('btnFinalizar').disabled = false;
+        document.getElementById('msgValidacionPasos').style.display = 'none';
+      }
+    }
+
+    async function finalizarCompra() {
+      if (!paso1Subido || !paso2WhatsApp) return;
+
+      const btnFinalizar = document.getElementById('btnFinalizar');
+      btnFinalizar.disabled = true;
+      btnFinalizar.innerText = 'REGISTRANDO...';
+
+      const orden = '#WIN-' + Math.floor(1000 + Math.random() * 9000);
+      const boletosFormateados = seleccionados.map(n => '#' + String(n).padStart(4, '0')).join(', ');
+
+      const nuevoComprador = {
+        orden: orden,
+        nombre: document.getElementById('nombre').value.trim() + ' ' + document.getElementById('apellidos').value.trim(),
+        cedula: document.getElementById('cedula').value.trim(),
+        provincia: document.getElementById('provincia').value,
+        telefono: document.getElementById('telefono').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        boletos: boletosFormateados,
+        comprobante: fotoComprobanteBase64,
+        fecha: new Date().toLocaleString()
+      };
+
+      const nuevosVendidos = Array.from(new Set([...vendidosGlobales, ...seleccionados]));
+      const nuevosCompradores = [nuevoComprador, ...compradoresGlobales];
+
+      await guardarDatosNube(nuevosVendidos, nuevosCompradores);
+
+      document.getElementById('txtOrdenCompra').innerText = orden;
+      document.getElementById('txtBoletosFinales').innerText = boletosFormateados;
+
+      btnFinalizar.innerText = '✅ FINALIZAR Y REGISTRAR COMPRA';
+      mostrarPantalla('screenGracias');
+
+      if (window.confetti) {
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+      }
+    }
+
+    // --- PANEL ADMIN ---
+    function abrirAdminLogin() {
+      document.getElementById('adminLoginBox').classList.remove('hidden');
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('adminUser').value = '';
+      document.getElementById('adminPass').value = '';
+      mostrarPantalla('screenAdmin');
+    }
+
+    function verificarAdmin() {
+      const user = document.getElementById('adminUser').value.trim();
+      const pass = document.getElementById('adminPass').value.trim();
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        document.getElementById('adminLoginBox').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        renderizarAdmin();
+      } else {
+        alert('Credenciales incorrectas.');
+      }
+    }
+
+    function renderizarAdmin() {
+      document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
+      const tbody = document.getElementById('adminTablaCompradores');
+      tbody.innerHTML = compradoresGlobales.map(c => `
+        <tr>
+          <td><b>${c.orden}</b></td>
+          <td>${c.nombre}<br><small style="color:#aaa;">CI: ${c.cedula}</small></td>
+          <td>${c.telefono}<br><small style="color:#aaa;">${c.provincia}</small></td>
+          <td style="color:#FFD700; font-weight:bold;">${c.boletos}</td>
+          <td>${c.comprobante ? `<a href="${c.comprobante}" target="_blank" style="color:#00E676;">Ver foto</a>` : 'Sin foto'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // ARRANQUE DIRECTO E INMEDIATO
+    iniciarMotorReel();
+    cargarDatosNube();
+  </script>
+</body>
+</html>
