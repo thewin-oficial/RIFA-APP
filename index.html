@@ -290,6 +290,7 @@
       border-radius: 10px; user-select: none; color: #777;
     }
     .num.sel { background: linear-gradient(135deg, #00E676, #1DE9B6); color: #000; font-weight: 900; border: none; box-shadow: 0 0 12px rgba(0, 230, 118, 0.8); }
+    .num.mio { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: 900; border: none; box-shadow: 0 0 12px rgba(255, 215, 0, 0.9); }
 
     .btn {
       width: 100%; padding: 18px; border: none; border-radius: 16px; font-weight: 900;
@@ -492,7 +493,7 @@
           <span>Total a pagar:</span>
           <b id="totalPagar" style="color: #00E676;">$0.00 USD</b>
         </div>
-        <button type="button" id="btnContinuar" class="btn" onclick="irAFormulario()">CONTINUAR CON MIS DATOS ➔</button>
+        <button type="button" id="btnContinuar" class="btn" disabled onclick="irAFormulario()">CONTINUAR CON MIS DATOS ➔</button>
         <button type="button" class="btn btn-sec" onclick="irAPrincipal()">◄ VOLVER A PAQUETES</button>
       </div>
     </div>
@@ -509,7 +510,7 @@
         <div class="form-group"><label>Provincia <span>*</span></label>
           <select id="provincia">
             <option value="">Selecciona tu provincia...</option>
-            <option value="Azuay">Azuay</option><option value="Guayas">Guayas</option><option value="Pichincha">Pichincha</option><option value="Tungurahua">Tungurahua</option><option value="Manabí">Manabí</option><option value="Otro">Otro</option>
+            <option value="Azuay">Azuay</option><option value="Guayas">Guayas</option><option value="Pichincha">Pichincha</option><option value="Tungurahua">Tungurahua</option><option value="Manabí">Manabí</option><option value="Orellana">Orellana</option><option value="Otro">Otro</option>
           </select>
         </div>
         <div class="form-group"><label>Teléfono / WhatsApp <span>*</span></label><input type="tel" id="telefono" placeholder="Ej: 0991234567"></div>
@@ -664,8 +665,13 @@
   <script>
     const SUPABASE_URL = 'TU_SUPABASE_URL';
     const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
+    const WHATSAPP_NUMERO = '593999999999'; // <-- REEMPLAZA CON TU NÚMERO DE WHATSAPP (ej: 593987654321)
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'thewin2026';
+
     const supabaseClient = (window.supabase && SUPABASE_URL !== 'TU_SUPABASE_URL') ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+    // --- SLIDER DE PREMIOS ---
     let slideActual = 0;
     let intervaloPremios = null;
 
@@ -691,7 +697,6 @@
       if (!slides.length) return;
 
       slideActual = (indice + slides.length) % slides.length;
-
       slides.forEach((s, i) => s.classList.toggle('active', i === slideActual));
       dots.forEach((d, i) => d.classList.toggle('active', i === slideActual));
     }
@@ -713,8 +718,7 @@
       }, 3800);
     }
 
-    document.addEventListener('DOMContentLoaded', iniciarSliderPremios);
-
+    // --- MASCOTA FALLBACK ---
     let intentoMascota = 0;
     function probarOtraExtensionMascota(img) {
       const alternativas = [
@@ -729,10 +733,12 @@
       }
     }
 
+    // --- VARIABLES DE RIFA Y RULETA ---
     let giros = 0;
     let seleccionados = [];
     let precioPorTicket = 1;
     let anguloActual = 0;
+    let girando = false;
     let vendidosGlobales = [];
     let compradoresGlobales = [];
 
@@ -792,11 +798,14 @@
 
     function renderizarTabla7000() {
       const vendidosSet = new Set(vendidosGlobales);
+      const selSet = new Set(seleccionados);
       const grid = document.getElementById('gridNumeros');
       if (grid) {
         const partes = new Array(7000);
         for (let i = 1; i <= 7000; i++) {
-          const clase = vendidosSet.has(i) ? 'num sel' : 'num';
+          let clase = 'num';
+          if (selSet.has(i)) clase = 'num mio';
+          else if (vendidosSet.has(i)) clase = 'num sel';
           partes[i - 1] = `<div class="${clase}" id="num-${i}">${i}</div>`;
         }
         grid.innerHTML = partes.join('');
@@ -810,83 +819,193 @@
       if (elemPorcTxt) elemPorcTxt.innerText = porc + '% VENDIDO';
     }
 
+    // --- NAVEGACIÓN ENTRE PANTALLAS ---
+    function mostrarPantalla(id) {
+      ['screen1', 'screen2', 'screen3', 'screen4', 'screenGracias', 'screenAdmin'].forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+      });
+      const activa = document.getElementById(id);
+      if (activa) activa.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function irAPrincipal() {
+      mostrarPantalla('screen1');
+      cargarDatosNube();
+    }
+
     function seleccionarPaquete(cantidad) {
       giros = parseInt(cantidad);
       seleccionados = [];
-      document.getElementBy('girosRestantes').innerText = giros;
+      girando = false;
+
+      document.getElementById('girosRestantes').innerText = giros;
       document.getElementById('cantSeleccionados').innerText = '0';
       document.getElementById('totalPagar').innerText = '$0.00 USD';
       document.getElementById('btnGirar').disabled = false;
       document.getElementById('btnGirar').innerText = '🎰 ¡GIRAR RULETA!';
-      document.getElementById('boomBox').classList.remove('show');
+      document.getElementById('btnContinuar').disabled = true;
 
-      document.getElementById('screen1').classList.add('hidden');
-      document.getElementById('screen2').classList.remove('hidden');
-      window.scrollTo(0, 0);
-      dibujarRuletaEstetica();
-      cargarDatosNube();
-    }
+      const boom = document.getElementById('boomBox');
+      if (boom) boom.classList.remove('show');
 
-    function irAPrincipal() {
-      document.getElementById('screen2').classList.add('hidden');
-      document.getElementById('screen3').classList.add('hidden');
-      document.getElementById('screen4').classList.add('hidden');
-      document.getElementById('screenGracias').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.add('hidden');
-      document.getElementById('screen1').classList.remove('hidden');
-      window.scrollTo(0, 0);
-      cargarDatosNube();
+      renderizarTabla7000();
+      dibujarRuleta();
+      mostrarPantalla('screen2');
     }
 
     function irASeleccion() {
-      document.getElementById('screen3').classList.add('hidden');
-      document.getElementById('screen2').classList.remove('hidden');
-      window.scrollTo(0, 0);
+      mostrarPantalla('screen2');
     }
 
     function irAFormulario() {
       if (seleccionados.length === 0) {
-        alert('Debes girar y obtener al menos un número.');
+        alert('Debes girar la ruleta para obtener tus números primero.');
         return;
       }
-      document.getElementById('screen2').classList.add('hidden');
-      document.getElementById('screen3').classList.remove('hidden');
-      window.scrollTo(0, 0);
+      mostrarPantalla('screen3');
     }
 
     function irAMetodosPago() {
-      const nombre = document.getElementById('nombre').value;
-      const apellidos = document.getElementById('apellidos').value;
-      const cedula = document.getElementById('cedula').value;
-      const telefono = document.getElementById('telefono').value;
-      const email = document.getElementById('email').value;
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellidos = document.getElementById('apellidos').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const provincia = document.getElementById('provincia').value;
+      const telefono = document.getElementById('telefono').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-      if (!nombre || !apellidos || !cedula || !telefono || !email) {
-        alert('Por favor completa todos los campos obligatorios.');
+      if (!nombre || !apellidos || !cedula || !provincia || !telefono || !email) {
+        alert('Por favor completa todos los campos obligatorios (*).');
         return;
       }
 
       const total = (seleccionados.length * precioPorTicket).toFixed(2);
-      document.getElementById('montoFinal').innerText = `$${total} USD`;
+      document.getElementById('montoFinal').innerText = '$' + total + ' USD';
 
-      document.getElementById('paypalBtn').href = "https://www.paypal.com/qrcodes/p2pqrc/ACGYQ3R92DPGY";
-
-      const numeroWhatsApp = "593991234567";
-      const mensajeWA = encodeURIComponent(`Hola, soy ${nombre} ${apellidos}, acabo de seleccionar los boletos: ${seleccionados.join(', ')} por un monto de $${total} USD. Adjunto mi comprobante de pago.`);
-      document.getElementById('whatsappBtn').href = `https://wa.me/${numeroWhatsApp}?text=${mensajeWA}`;
-
+      // Reiniciar validación de pasos de comprobante
       paso1Subido = false;
       paso2WhatsApp = false;
       fotoComprobanteBase64 = null;
+      document.getElementById('inputComprobante').value = '';
       document.getElementById('previewComprobante').style.display = 'none';
       document.getElementById('fileTxtLabel').innerText = '📁 Haz clic aquí para adjuntar imagen';
-      evaluarDesbloqueoBoton();
+      document.getElementById('btnFinalizar').disabled = true;
+      document.getElementById('msgValidacionPasos').style.display = 'block';
 
-      document.getElementById('screen3').classList.add('hidden');
-      document.getElementById('screen4').classList.remove('hidden');
-      window.scrollTo(0, 0);
+      // Preparar enlace automático de WhatsApp
+      const boletosTxt = seleccionados.map(n => '#' + String(n).padStart(4, '0')).join(', ');
+      const msg = `Hola THE WIN! 🛵 Quiero confirmar mi compra:\n• *Nombre:* ${nombre} ${apellidos}\n• *Cédula:* ${cedula}\n• *Provincia:* ${provincia}\n• *Boletos:* ${boletosTxt}\n• *Total pagado:* $${total} USD\nAdjunto mi comprobante de pago.`;
+      document.getElementById('whatsappBtn').href = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(msg)}`;
+
+      mostrarPantalla('screen4');
     }
 
+    // --- RULETA CANVAS Y LÓGICA DE GIRO ---
+    function dibujarRuleta() {
+      const canvas = document.getElementById('wheel');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const colores = ['#FFD700', '#1a1a1a', '#FF5722', '#222222', '#00E676', '#111111', '#FFA500', '#2b2b2b'];
+      const numSectores = colores.length;
+      const anguloSector = (2 * Math.PI) / numSectores;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radio = cx - 4;
+
+      for (let i = 0; i < numSectores; i++) {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radio, i * anguloSector, (i + 1) * anguloSector);
+        ctx.fillStyle = colores[i];
+        ctx.fill();
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
+    function obtenerNumeroDisponible() {
+      const ocupados = new Set([...vendidosGlobales, ...seleccionados]);
+      if (ocupados.size >= 7000) return null;
+      let candidato;
+      let intentos = 0;
+      do {
+        candidato = Math.floor(Math.random() * 7000) + 1;
+        intentos++;
+      } while (ocupados.has(candidato) && intentos < 15000);
+
+      if (ocupados.has(candidato)) {
+        for (let i = 1; i <= 7000; i++) {
+          if (!ocupados.has(i)) return i;
+        }
+        return null;
+      }
+      return candidato;
+    }
+
+    function girarRuleta() {
+      if (girando || giros <= 0) return;
+
+      const numeroGanado = obtenerNumeroDisponible();
+      if (!numeroGanado) {
+        alert('¡Todos los boletos del sorteo se han agotado!');
+        return;
+      }
+
+      girando = true;
+      const btnGirar = document.getElementById('btnGirar');
+      const boomBox = document.getElementById('boomBox');
+      btnGirar.disabled = true;
+      boomBox.classList.remove('show');
+
+      anguloActual += 1440 + Math.floor(Math.random() * 360);
+      const wheel = document.getElementById('wheel');
+      wheel.style.transform = `rotate(${anguloActual}deg)`;
+
+      setTimeout(() => {
+        seleccionados.push(numeroGanado);
+        giros--;
+
+        boomBox.innerText = '#' + String(numeroGanado).padStart(4, '0');
+        boomBox.classList.add('show');
+
+        if (window.confetti) {
+          confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
+        }
+
+        const celda = document.getElementById('num-' + numeroGanado);
+        if (celda) {
+          celda.className = 'num mio';
+          celda.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        document.getElementById('girosRestantes').innerText = giros;
+        document.getElementById('cantSeleccionados').innerText = seleccionados.length;
+        document.getElementById('totalPagar').innerText = '$' + (seleccionados.length * precioPorTicket).toFixed(2) + ' USD';
+
+        girando = false;
+
+        if (giros > 0) {
+          btnGirar.disabled = false;
+        } else {
+          btnGirar.innerText = '✅ GIROS COMPLETADOS';
+          document.getElementById('btnContinuar').disabled = false;
+        }
+      }, 2050);
+    }
+
+    // --- VALIDACIÓN DE COMPROBANTE Y WHATSAPP ---
     function procesarFotoComprobante(input) {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -895,209 +1014,104 @@
           const preview = document.getElementById('previewComprobante');
           preview.src = fotoComprobanteBase64;
           preview.style.display = 'inline-block';
-          document.getElementById('fileTxtLabel').innerText = '✅ Imagen adjuntada con éxito';
+          document.getElementById('fileTxtLabel').innerText = '✅ Comprobante cargado correctamente';
           paso1Subido = true;
-          evaluarDesbloqueoBoton();
+          verificarPasosPago();
         };
         reader.readAsDataURL(input.files[0]);
       }
     }
 
     function marcarWhatsAppEnviado() {
-      if (!paso1Subido) {
-        alert('⚠️ Primero debes adjuntar la imagen de tu comprobante en el Paso 1.');
-        return;
-      }
       paso2WhatsApp = true;
-      evaluarDesbloqueoBoton();
+      verificarPasosPago();
     }
 
-    function evaluarDesbloqueoBoton() {
-      const btn = document.getElementById('btnFinalizar');
-      const msg = document.getElementById('msgValidacionPasos');
-
+    function verificarPasosPago() {
       if (paso1Subido && paso2WhatsApp) {
-        btn.disabled = false;
-        msg.style.color = '#00E676';
-        msg.innerText = '✅ ¡Ambos pasos completados! Ya puedes finalizar tu compra.';
-      } else {
-        btn.disabled = true;
-        msg.style.color = '#ff4d4d';
-        msg.innerText = '⚠️ Debes completar el Paso 1 (subir foto) y el Paso 2 (enviar WhatsApp) para habilitar este botón.';
+        document.getElementById('btnFinalizar').disabled = false;
+        document.getElementById('msgValidacionPasos').style.display = 'none';
       }
-    }
-
-    function dibujarRuletaEstetica() {
-      const canvas = document.getElementById('wheel');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const r = cx - 4;
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fillStyle = '#111';
-      ctx.fill();
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#FFD700';
-      ctx.stroke();
-
-      ctx.fillStyle = '#FFD700';
-      ctx.font = 'bold 16px Poppins, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('THE WIN', cx, cy);
-    }
-
-    function girarRuleta() {
-      if (giros <= 0) {
-        alert('No te quedan giros pendientes.');
-        return;
-      }
-
-      document.getElementById('btnGirar').disabled = true;
-      document.getElementById('boomBox').classList.remove('show');
-      giros--;
-      document.getElementById('girosRestantes').innerText = giros;
-
-      const canvas = document.getElementById('wheel');
-      anguloActual += 1440 + Math.floor(Math.random() * 360);
-      if (canvas) {
-        canvas.style.transform = `rotate(${anguloActual}deg)`;
-      }
-
-      let numeroElegido = null;
-      let intentos = 0;
-      while (intentos < 15000) {
-        const candidato = Math.floor(Math.random() * 7000) + 1;
-        if (!vendidosGlobales.includes(candidato) && !seleccionados.includes(candidato)) {
-          numeroElegido = candidato;
-          break;
-        }
-        intentos++;
-      }
-
-      setTimeout(() => {
-        if (numeroElegido !== null) {
-          seleccionados.push(numeroElegido);
-          const celda = document.getElementById(`num-${numeroElegido}`);
-          if (celda) {
-            celda.classList.add('sel');
-            const grid = document.getElementById('gridNumeros');
-            if (grid) {
-              grid.scrollTop = celda.offsetTop - grid.offsetTop - 80;
-            }
-          }
-
-          const boom = document.getElementById('boomBox');
-          boom.innerText = `#${String(numeroElegido).padStart(4, '0')}`;
-          boom.classList.add('show');
-
-          if (window.confetti) {
-            confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-          }
-        }
-
-        document.getElementById('cantSeleccionados').innerText = seleccionados.length;
-        document.getElementById('totalPagar').innerText = `$${(seleccionados.length * precioPorTicket).toFixed(2)} USD`;
-
-        if (giros > 0) {
-          document.getElementById('btnGirar').disabled = false;
-        } else {
-          document.getElementById('btnGirar').innerText = '✅ GIROS COMPLETADOS';
-        }
-      }, 2000);
     }
 
     async function finalizarCompra() {
-      const btn = document.getElementById('btnFinalizar');
-      btn.disabled = true;
-      btn.innerText = 'REGISTRANDO...';
+      if (!paso1Subido || !paso2WhatsApp) return;
 
-      const nombre = document.getElementById('nombre').value;
-      const apellidos = document.getElementById('apellidos').value;
-      const cedula = document.getElementById('cedula').value;
-      const provincia = document.getElementById('provincia').value;
-      const telefono = document.getElementById('telefono').value;
-      const email = document.getElementById('email').value;
-      const total = (seleccionados.length * precioPorTicket).toFixed(2);
-      const ordenId = '#WIN-' + Math.floor(1000 + Math.random() * 9000);
+      const btnFinalizar = document.getElementById('btnFinalizar');
+      btnFinalizar.disabled = true;
+      btnFinalizar.innerText = 'REGISTRANDO...';
+
+      const orden = '#WIN-' + Math.floor(1000 + Math.random() * 9000);
+      const boletosFormateados = seleccionados.map(n => '#' + String(n).padStart(4, '0')).join(', ');
 
       const nuevoComprador = {
-        orden: ordenId,
-        nombre: `${nombre} ${apellidos}`,
-        cedula,
-        provincia,
-        telefono,
-        email,
-        boletos: [...seleccionados],
-        total: `$${total} USD`,
-        comprobante: fotoComprobanteBase64
+        orden: orden,
+        nombre: document.getElementById('nombre').value.trim() + ' ' + document.getElementById('apellidos').value.trim(),
+        cedula: document.getElementById('cedula').value.trim(),
+        provincia: document.getElementById('provincia').value,
+        telefono: document.getElementById('telefono').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        boletos: boletosFormateados,
+        comprobante: fotoComprobanteBase64,
+        fecha: new Date().toLocaleString()
       };
 
-      const nuevosVendidos = [...vendidosGlobales, ...seleccionados];
-      const nuevosCompradores = [...compradoresGlobales, nuevoComprador];
+      const nuevosVendidos = Array.from(new Set([...vendidosGlobales, ...seleccionados]));
+      const nuevosCompradores = [nuevoComprador, ...compradoresGlobales];
 
       await guardarDatosNube(nuevosVendidos, nuevosCompradores);
 
-      if (window.emailjs) {
-        try {
-          emailjs.send("TU_SERVICE_ID", "TU_TEMPLATE_ID", {
-            to_name: `${nombre} ${apellidos}`,
-            to_email: email,
-            orden: ordenId,
-            boletos: seleccionados.join(', '),
-            total: `$${total} USD`
-          });
-        } catch (e) {}
+      document.getElementById('txtOrdenCompra').innerText = orden;
+      document.getElementById('txtBoletosFinales').innerText = boletosFormateados;
+
+      btnFinalizar.innerText = '✅ FINALIZAR Y REGISTRAR COMPRA';
+      mostrarPantalla('screenGracias');
+
+      if (window.confetti) {
+        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
       }
-
-      document.getElementById('txtOrdenCompra').innerText = ordenId;
-      document.getElementById('txtBoletosFinales').innerText = seleccionados.map(n => `#${String(n).padStart(4, '0')}`).join(', ');
-
-      btn.innerText = '✅ FINALIZAR Y REGISTRAR COMPRA';
-      document.getElementById('screen4').classList.add('hidden');
-      document.getElementById('screenGracias').classList.remove('hidden');
-      window.scrollTo(0, 0);
     }
 
+    // --- PANEL ADMIN ---
     function abrirAdminLogin() {
-      document.getElementById('screen1').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.remove('hidden');
       document.getElementById('adminLoginBox').classList.remove('hidden');
       document.getElementById('adminDashboard').classList.add('hidden');
-      window.scrollTo(0, 0);
+      document.getElementById('adminUser').value = '';
+      document.getElementById('adminPass').value = '';
+      mostrarPantalla('screenAdmin');
     }
 
-    async function verificarAdmin() {
+    function verificarAdmin() {
       const user = document.getElementById('adminUser').value.trim();
       const pass = document.getElementById('adminPass').value.trim();
-
-      if (user === 'admin' && pass === 'thewin2026') {
-        await cargarDatosNube();
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
         document.getElementById('adminLoginBox').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
-        document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
-
-        const tbody = document.getElementById('adminTablaCompradores');
-        tbody.innerHTML = compradoresGlobales.map(c => `
-          <tr>
-            <td><b>${c.orden || '-'}</b></td>
-            <td>${c.nombre || ''}</td>
-            <td>CI: ${c.cedula || ''}<br>Tel: ${c.telefono || ''}<br>${c.provincia || ''}</td>
-            <td style="color:#FFD700; font-weight:bold;">${(c.boletos || []).join(', ')}</td>
-            <td>${c.comprobante ? `<img src="${c.comprobante}" style="width:50px; height:50px; object-fit:cover; border-radius:6px;">` : 'Sin foto'}</td>
-          </tr>
-        `).join('');
+        renderizarAdmin();
       } else {
-        alert('Usuario o contraseña incorrectos.');
+        alert('Credenciales incorrectas.');
       }
     }
 
-    window.addEventListener('DOMContentLoaded', cargarDatosNube);
+    function renderizarAdmin() {
+      document.getElementById('adminTotalVendidos').innerText = `${vendidosGlobales.length} / 7000`;
+      const tbody = document.getElementById('adminTablaCompradores');
+      tbody.innerHTML = compradoresGlobales.map(c => `
+        <tr>
+          <td><b>${c.orden}</b></td>
+          <td>${c.nombre}<br><small style="color:#aaa;">CI: ${c.cedula}</small></td>
+          <td>${c.telefono}<br><small style="color:#aaa;">${c.provincia}</small></td>
+          <td style="color:#FFD700; font-weight:bold;">${c.boletos}</td>
+          <td>${c.comprobante ? `<a href="${c.comprobante}" target="_blank" style="color:#00E676;">Ver foto</a>` : 'Sin foto'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', () => {
+      iniciarSliderPremios();
+      cargarDatosNube();
+    });
   </script>
 </body>
 </html>
